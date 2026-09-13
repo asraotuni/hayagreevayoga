@@ -6,7 +6,7 @@ Last updated: 2026-09-13 (UTC).
 
 Create a yoga therapy portal for Chandrika Saripalli, MSc Yoga Therapy. The user previously created a separate finplanner project at ~/hiramyatech/finplanner hosted on AWS Amplify Gen 2 and wants this portal hosted on Amplify too.
 
-Current scope includes the introduction, portal navigation, and a preview-only Case Info form. Book Appointment and Testimonials have placeholder panels. Actual appointment booking, persistent case reporting, a payment gateway, and different login interfaces remain future features.
+Current scope includes the introduction, portal navigation, and a preview-only Case Info form. Book Appointment has a placeholder panel; Testimonials displays four user-supplied recommendations. Actual appointment booking, persistent case reporting, a payment gateway, and different login interfaces remain future features.
 
 User-supplied profile details:
 - Chandrika has worked with patients across 10+ countries.
@@ -61,7 +61,7 @@ References checked:
 - GitHub remote github: git@github.com:asraotuni/hayagreevayoga.git
 - Commit 0094234: Add yoga therapy introduction page and Amplify hosting configuration.
 - That commit was successfully pushed to both remotes at the user's request.
-- Commit c697950 (Add portal sidebar and case information form), including context.md, was successfully pushed on dev to both Bitbucket and GitHub. Subsequent changes listed below are local and uncommitted.
+- Commit c697950 (Add portal sidebar and case information form), including context.md, was successfully pushed on dev to both Bitbucket and GitHub. Subsequent portal updates were committed as f0602da and pushed to both remotes; only the latest context save is uncommitted.
 - npm run build passed; generated files were checked against source files.
 - Git whitespace and Node server syntax checks passed.
 - Local HTTP checks returned 200 for the page and stylesheet. No browser visual inspection was performed.
@@ -82,17 +82,60 @@ New app.js handles navigation, validation, safe text-only review rendering, and 
 
 The user reported no sidebar at localhost:8000. Inspection outside the sandbox found a Python HTTP server on port 8000 serving the current HTML, CSS, and app.js exactly. Browser caching was suspected, not conclusively proven. Added version query parameters to stylesheet/script URLs in index.html and Cache-Control: no-store to the Node development server. Rebuilt and verified the versioned URLs on port 8000. The user then confirmed the layout looked good. On screens 640px wide or less, navigation appears above the content instead of on the left.
 
-Current asset URLs: styles.css?v=c697950 and app.js?v=portal-menus-2. These are manual cache versions, not automatic content hashes.
+Current asset URLs: styles.css?v=testimonials-4 and app.js?v=portal-menus-2. These are manual cache versions, not automatic content hashes.
 
-Added Book Appointment (#book-appointment) and Testimonials (#testimonials) to the sidebar at the user's request. Both open separate right-side panels with coming-soon text. No booking workflow or testimonial content has been implemented. app.js now switches among the introduction and the three dedicated panels (Case Info, Book Appointment, Testimonials), updates the active menu, and focuses the selected panel heading. Build, JavaScript syntax, and whitespace checks passed for the menu changes.
+Added Book Appointment (#book-appointment) and Testimonials (#testimonials) to the sidebar at the user's request. Both open separate right-side panels. Book Appointment still has coming-soon text and no booking workflow; Testimonials was subsequently populated as described below. app.js now switches among the introduction and the three dedicated panels (Case Info, Book Appointment, Testimonials), updates the active menu, and focuses the selected panel heading. Build, JavaScript syntax, and whitespace checks passed for the menu changes.
 
 The user asked about Razorpay integration duration only; no implementation was authorized or started. Provided an engineering estimate of roughly 1–3 working days for a tested fixed-fee, one-time payment integration, excluding account activation delays. Explained backend order creation, payment verification, records, and webhooks. Suggested starting with a fixed INR session fee and integrating appointments later. Do not treat this discussion as authorization to add payments.
 
-Current uncommitted changes: app.js, index.html, scripts/serve.mjs, and this context.md update. Latest committed/pushed revision remains c697950 on dev. No further commit, push, or AWS deployment was performed. AWS deployment success and the earlier GitHub integration permission issue remain unconfirmed.
+The cache and menu changes were subsequently committed and pushed as part of f0602da. AWS deployment success and the earlier GitHub integration permission issue remain unconfirmed.
 
 
 ## Landing page flow and location (2026-09-13)
 
 Removed Introduction, About Chandrika, and Areas of support from the left menu as requested. Their content remains in a continuous landing-page flow in index.html. Sidebar now contains only Case Info, Book Appointment, and Testimonials. Header logo and footer brand link to #home to return from other panels.
 
-Added a location section after areas of support and before the connection section: Hayagreeva Yoga School, Club House, Gopalan Habitat Splendour, Brookefield, Kundalahalli, Bangalore 560037 (user-supplied address). Styled with a semantic address element. Updated stylesheet cache version to landing-location-3 and README. These changes remain local and uncommitted along with the earlier cache/menu changes. Build and whitespace checks passed.
+Added a location section after areas of support and before the connection section: Hayagreeva Yoga School, Club House, Gopalan Habitat Splendour, Brookefield, Kundalahalli, Bangalore 560037 (user-supplied address). Styled with a semantic address element. Updated stylesheet cache version to landing-location-3 and README. These changes were committed and pushed as part of f0602da along with the earlier cache/menu changes. Build and whitespace checks passed.
+
+
+## Testimonials and latest repository status (2026-09-13)
+
+The user supplied four LinkedIn recommendations in chat and requested publication in Testimonials. Added the supplied recommendation text in full, with names, professional descriptions, and dates:
+- Sindhuja Sukumaran — July 26, 2025; yoga/mudra therapy experience for her mother.
+- Kalyani R — July 24, 2025; yoga and music teaching/mentorship.
+- Vaishnavi Kappagantula — July 4, 2025; Carnatic music teaching.
+- Sai Susarla — June 21, 2025; holistic healing and teaching integral psychology students.
+
+Removed LinkedIn connection-degree labels, client relationship metadata, and truncated “more” UI markers. Each recommendation has an individually scrollable, keyboard-focusable text region with its own accessible label. Cards use two columns on wide screens and one column below 900px. Names, roles, dates, and source links remain outside the scrollable text. Intro copy accurately includes yoga therapy, teaching, and music mentorship.
+
+Each card links to the same user-provided recommendations page, not an individual recommendation permalink:
+https://www.linkedin.com/in/chsaripalli/details/recommendations/?detailScreenTabIndex=0
+
+Direct LinkedIn access failed; the supplied text was used without independent verification. No LinkedIn credentials or tokens were requested or used.
+
+Latest commit: f0602da — Update landing page and add appointment and testimonial sections. Successfully pushed dev to both origin (Bitbucket) and github (GitHub) at the user's request. Includes README, app.js, context.md, index.html, scripts/serve.mjs, and styles.css changes. npm run build, node --check app.js, and git diff --check passed. Working tree was clean after the push. This subsequent context.md save is local and has not been committed or pushed.
+
+
+## Appointment schedule integration
+
+Built appointment preferences form: muted read-only first/last names reserved for future profile integration, desirable date (minimum today in Asia/Kolkata), appointment email, and counselling channel (Online / At therapy center). Center address appears when selected. User specified one-hour appointments.
+
+The standard public ICS feed for chsaripalli@gmail.com returned HTTP 404. User subsequently supplied https://calendar.app.google/cTrkzAT8y5eaLwraA, which resolved with HTTP 200 to https://calendar.google.com/appointments/schedules/AcZssZ130T9uNP94Av-Y9ZELQ3BQVycvWTWxj0gdNGU6kG9EaGRfl4tFSx_8QwBqpdcCf2_s6mKIsKVt.
+
+Embedded that Google appointment schedule with gv=true and added a direct new-tab fallback. Google controls live slots, configured duration, booking and notifications. No bookings or notification emails were sent during development. Portal preferences are NOT automatically transferred to Google; page explicitly tells users to enter the same email and channel there. No API slot extraction, calendar writes, or profile integration implemented. Continue button validates preferences and moves to the calendar with a text-only preferences summary; it does not confirm a booking. Calendar duration/working hours and actual browser booking flow have not been verified. Public endpoint HTTP check, build, JS syntax, and whitespace checks performed. These changes are uncommitted.
+
+
+## Service route refactor
+
+User expanded the portal to yoga therapy, Carnatic music, and astrology, requesting yoga features under /yoga-therapy. Moved the full previous index.html into yoga-therapy/index.html; all yoga panels are retained with hash links (/yoga-therapy/#case-info, #book-appointment, #testimonials). Root index.html is now a three-service selector. Added carnatic-music/index.html and astrology/index.html as basic landing pages, with services.css for these pages. No invented credentials or new service workflows added.
+
+Yoga assets use root-relative /styles.css and /app.js URLs. Yoga header has an All services link back to /. Existing yoga logo returns to #home within the yoga route. scripts/build.mjs publishes all three directories and shared assets. scripts/serve.mjs handles service paths with no slash, trailing slash, and /index.html. Python localhost:8000 serves the real directories and redirects slashless paths normally. README documents routes. Avoid a root catch-all rewrite that would hide the service index pages.
+
+Verification: npm run build, server JS syntax, whitespace, and all built local links/anchors checked. All four pages fetched successfully via localhost:8000 (following directory redirects) and matched source files. No AWS deployment or browser visual test performed. Route refactor and earlier appointment integration remain uncommitted; latest pushed commit remains f0602da.
+
+
+## Standing workflow preference and commit preparation
+
+The user explicitly requests: every time they say “commit & push”, save/update context.md FIRST, then commit and push to both repositories. Preserve this preference for future sessions.
+
+Prepared this context update before committing the service-route refactor and appointment integration. Current scope: root service selector, full yoga portal at /yoga-therapy/, basic /carnatic-music/ and /astrology/ pages, Google appointment schedule embed and local preference form, updated build/server routes and documentation. Target branch is dev; push to origin (Bitbucket) and github (GitHub). Actual commit/push outcome must be checked in Git history and remote refs; this pre-commit note does not assert success.

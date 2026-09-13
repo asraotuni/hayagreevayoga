@@ -1,6 +1,16 @@
-# Hayagreeva Yoga
+# Hayagreeva Portal
 
-An introductory website for Chandrika Saripalli, MSc Yoga Therapy. Built with HTML, CSS, and an original inline SVG illustration. No dependencies to install.
+A static portal for yoga therapy, Carnatic music, and astrology. Built with HTML, CSS, and JavaScript. No dependencies to install.
+
+## Service routes
+
+- `/`: service selection homepage.
+- `/yoga-therapy/`: the full yoga portal, including introduction, location, Case Info, appointment booking, and testimonials.
+- `/yoga-therapy/#case-info`, `/yoga-therapy/#book-appointment`, `/yoga-therapy/#testimonials`: direct yoga feature links.
+- `/carnatic-music/`: basic Carnatic music landing page.
+- `/astrology/`: basic astrology landing page.
+
+Each service is a real directory with an index.html, so a static server can serve it directly. The Node preview also accepts paths without a trailing slash. Shared assets use root-relative URLs. No catch-all rewrite to the root index.html should be added; that would replace service pages with the service selector.
 
 ## Local preview
 
@@ -25,6 +35,10 @@ Build configuration reference: [AWS Amplify Hosting build specification](https:/
 
 Google Fonts are optional; the page uses local serif and sans-serif fallbacks when offline. LinkedIn links open in a new tab.
 
-The landing page flows through the introduction, About Chandrika, areas of support, and the yoga therapy location at Hayagreeva Yoga School, Club House, Gopalan Habitat Splendour, Brookefield, Kundalahalli, Bangalore 560037. The left navigation contains Case Info, Book Appointment, and Testimonials; the latter two are placeholders. The header logo returns to the landing page. On small screens, the menu sits above the content. Case Info includes first/last name, date/time/place of birth, occupation, and health concerns. Required fields and future birth dates are validated before an on-page review. Details remain only in the current page; nothing is stored or submitted.
+The yoga therapy landing page flows through the introduction, About Chandrika, areas of support, and the yoga therapy location at Hayagreeva Yoga School, Club House, Gopalan Habitat Splendour, Brookefield, Kundalahalli, Bangalore 560037. The left navigation contains Case Info, Book Appointment, and Testimonials; Book Appointment embeds Chandrika’s public Google booking schedule, and Testimonials contains client recommendations. The yoga header logo returns to the yoga landing page; All services returns to the root homepage. On small screens, the menu sits above the content. Case Info includes first/last name, date/time/place of birth, occupation, and health concerns. Required fields and future birth dates are validated before an on-page review. Details remain only in the current page; nothing is stored or submitted.
 
 Booking, persistent case records, payments, and role-based login are reserved for future work.
+
+## Appointment booking
+
+The appointment page embeds https://calendar.app.google/cTrkzAT8y5eaLwraA. Google manages actual availability, booking, and notifications. Configure the schedule duration to one hour in Google Calendar. The portal collects preferred date, email, and counselling channel locally; these are not passed to Google automatically. Visitors must complete the Google form to book. Name fields await profile integration. A direct link is available if the embed cannot load.

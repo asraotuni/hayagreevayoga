@@ -67,3 +67,41 @@ document.querySelector('#edit-details').addEventListener('click', () => {
 
 // Enable review only after the handler that prevents submission is installed.
 form.querySelector('[type="submit"]').disabled = false;
+
+
+// Google owns live availability and booking. Local preferences are not sent
+// to its cross-origin booking page; never claim a booking from iframe loading.
+const appointmentForm = document.querySelector('#appointment-form');
+const appointmentDate = document.querySelector('#appointment-date');
+const appointmentChannel = document.querySelector('#appointment-channel');
+const appointmentCenter = document.querySelector('#appointment-center');
+function updateAppointmentDateMinimum() {
+  const parts = new Intl.DateTimeFormat('en-CA', {
+    timeZone: 'Asia/Kolkata', year: 'numeric', month: '2-digit', day: '2-digit',
+  }).formatToParts(new Date());
+  const value = type => parts.find(part => part.type === type).value;
+  appointmentDate.min = `${value('year')}-${value('month')}-${value('day')}`;
+}
+updateAppointmentDateMinimum();
+appointmentDate.addEventListener('focus', updateAppointmentDateMinimum);
+appointmentChannel.addEventListener('change', () => {
+  appointmentCenter.hidden = appointmentChannel.value !== 'therapy-center';
+});
+appointmentForm.addEventListener('reset', () => {
+  document.querySelector('#booking-preferences').textContent = '';
+  appointmentCenter.hidden = true;
+  updateAppointmentDateMinimum();
+});
+appointmentForm.addEventListener('submit', event => {
+  event.preventDefault();
+  updateAppointmentDateMinimum();
+  if (!appointmentForm.reportValidity()) return;
+  const channel = appointmentChannel.value === 'online' ? 'Online' : 'At therapy center';
+  document.querySelector('#booking-preferences').textContent = `Your preferences: ${appointmentDate.value} (India time), ${channel}. Use ${document.querySelector('#appointment-email').value} in Google’s booking form. These details have not been submitted.`;
+  document.querySelector('#live-booking-heading').focus();
+  document.querySelector('#live-booking').scrollIntoView({ block: 'start', behavior: 'smooth' });
+});
+appointmentForm.addEventListener('input', () => {
+  document.querySelector('#booking-preferences').textContent = '';
+});
+appointmentForm.querySelector('[type="submit"]').disabled = false;
