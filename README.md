@@ -25,4 +25,6 @@ Build configuration reference: [AWS Amplify Hosting build specification](https:/
 
 Google Fonts are optional; the page uses local serif and sans-serif fallbacks when offline. LinkedIn links open in a new tab.
 
-Booking, case reporting, payments, and role-based login are reserved for future work.
+The portal has a left navigation pane for Introduction, About Chandrika, Areas of support, and Case Info. On small screens, the menu sits above the content. Case Info includes first/last name, date/time/place of birth, occupation, and health concerns. Required fields and future birth dates are validated before an on-page review. Details remain only in the current page; nothing is stored or submitted.
+
+Booking, persistent case records, payments, and role-based login are reserved for future work.
