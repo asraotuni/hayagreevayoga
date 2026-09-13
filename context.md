@@ -233,3 +233,7 @@ User clarified expected account interaction. The signed-in first-name button now
 ## Appointment and Profile flow refinement
 
 Appointment email is now populated from the signed-in profile and read-only. Removed the local desirable-date field; users choose live date/time only in the embedded Google appointment calendar. Counselling channel is now an Online / At therapy center required radio choice, with therapy-center address shown when selected. Profile Save now returns to the main landing page after successful save; Cancel already returns there without saving.
+
+## Yoga appointment layout refinements
+
+Removed the therapist/qualification note from the Yoga Therapy left sidebar. Counselling channel radio inputs now appear before their labels and are left-aligned. Increased the embedded Google appointment frame height to 960px for a more consistent scrolling area. Google’s appointment-schedule iframe provides host-side width/height controls but does not offer supported parameters to force seven displayed days or a Monday week start; those remain controlled by Google’s booking page and schedule configuration.
