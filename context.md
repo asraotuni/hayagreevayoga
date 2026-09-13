@@ -219,3 +219,9 @@ Cognito now successfully creates the Google federated user and stores its given 
 Replaced the small profile dialog with `/profile/`, opened by clicking the signed-in first-name menu button. The page includes first name, last name, date of birth, email (read-only from sign-in), mobile number, address, country (defaults to India), state, and PIN code. It stores editable values as mutable Cognito standard/custom user attributes and requires no new third-party API. The Profile button remains available across portal pages.
 
 Yoga Therapy now uses signed-in profile first name, last name, date of birth, and email to prefill matching Case Info and appointment fields. Case-specific medical information, occupation, time/place of birth remain deliberately separate. Build and JavaScript syntax checks passed. Backend deployment is required because the additional Cognito profile attributes need to be created.
+
+## Profile deployment correction
+
+Amplify job 20 failed while updating the Cognito user pool. The concrete log error was `CFNUpdateNotSupportedError: User pool attributes cannot be changed after a user pool has been created`; Cognito also rejected attempted custom attribute definitions during the update. Adding the requested standard/custom attributes would require deleting and recreating the user pool, which would delete the current federated user, so that path was not taken.
+
+Removed the incompatible schema additions. First/last name remain stored in Cognito and editable on Profile. Date of birth, mobile, address, country, state, and PIN are saved per signed-in user in browser local storage for now and prefill matching Yoga form fields in that same browser. This restores backend deployment without data loss. A future cloud-persistent profile store should use a separate Amplify Data resource rather than alter the live Cognito user-pool schema.
