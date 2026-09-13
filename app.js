@@ -1,17 +1,17 @@
 const intro = document.querySelector('#intro-panel');
-const casePanel = document.querySelector('#case-info');
+const panels = ['case-info', 'book-appointment', 'testimonials'].map(id => document.getElementById(id));
 const menus = [...document.querySelectorAll('[data-menu]')];
 
 function navigate() {
   const route = location.hash.slice(1) || 'home';
-  const isCase = route === 'case-info';
-  intro.hidden = isCase;
-  casePanel.hidden = !isCase;
+  const activePanel = panels.find(panel => panel.id === route);
+  intro.hidden = Boolean(activePanel);
+  for (const panel of panels) panel.hidden = panel !== activePanel;
   for (const link of menus) {
     if (link.dataset.menu === route) link.setAttribute('aria-current', 'page');
     else link.removeAttribute('aria-current');
   }
-  if (isCase) document.querySelector('#case-heading').focus({ preventScroll: true });
+  if (activePanel) activePanel.querySelector('h1').focus({ preventScroll: true });
   // Anchor targets may have been hidden when the browser first handled the hash.
   const target = document.getElementById(route);
   if (target) target.scrollIntoView({ block: 'start' });
