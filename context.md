@@ -225,3 +225,7 @@ Yoga Therapy now uses signed-in profile first name, last name, date of birth, an
 Amplify job 20 failed while updating the Cognito user pool. The concrete log error was `CFNUpdateNotSupportedError: User pool attributes cannot be changed after a user pool has been created`; Cognito also rejected attempted custom attribute definitions during the update. Adding the requested standard/custom attributes would require deleting and recreating the user pool, which would delete the current federated user, so that path was not taken.
 
 Removed the incompatible schema additions. First/last name remain stored in Cognito and editable on Profile. Date of birth, mobile, address, country, state, and PIN are saved per signed-in user in browser local storage for now and prefill matching Yoga form fields in that same browser. This restores backend deployment without data loss. A future cloud-persistent profile store should use a separate Amplify Data resource rather than alter the live Cognito user-pool schema.
+
+## Account menu correction
+
+User clarified expected account interaction. The signed-in first-name button now opens an account menu with exactly two actions: Profile and Sign out. Profile opens `/profile/`; Sign out immediately ends the Cognito session and restores the Sign in control. The editable Profile page now has explicit Save profile and Cancel actions; Cancel returns to the service selector without saving changes.
