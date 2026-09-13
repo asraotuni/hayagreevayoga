@@ -213,3 +213,9 @@ After the OAuth listener deployment, user reached Cognito's error return `attrib
 ## OAuth PKCE correction
 
 Cognito now successfully creates the Google federated user and stores its given name, family name, and email. The remaining profile-display failure was frontend OAuth handling: direct navigation to Cognito `/oauth2/authorize` did not create Amplify's PKCE verifier and OAuth state in browser storage. The callback listener therefore received the `?code=` URL but could not exchange it for tokens. Restored Amplify `signInWithRedirect({ provider: "Google" })`, which creates that state/PKCE data, while retaining the explicit callback listener required by this static multi-page portal. After deployment, user must start a fresh sign-in from the portal button; an existing returned `?code=` URL cannot be reused.
+
+## Dedicated Profile page
+
+Replaced the small profile dialog with `/profile/`, opened by clicking the signed-in first-name menu button. The page includes first name, last name, date of birth, email (read-only from sign-in), mobile number, address, country (defaults to India), state, and PIN code. It stores editable values as mutable Cognito standard/custom user attributes and requires no new third-party API. The Profile button remains available across portal pages.
+
+Yoga Therapy now uses signed-in profile first name, last name, date of birth, and email to prefill matching Case Info and appointment fields. Case-specific medical information, occupation, time/place of birth remain deliberately separate. Build and JavaScript syntax checks passed. Backend deployment is required because the additional Cognito profile attributes need to be created.

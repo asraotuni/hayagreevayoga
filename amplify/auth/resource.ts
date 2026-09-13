@@ -28,5 +28,11 @@ export const auth = defineAuth({
   userAttributes: {
     givenName: { mutable: true, required: false },
     familyName: { mutable: true, required: false },
+    birthdate: { mutable: true, required: false },
+    phoneNumber: { mutable: true, required: false },
+    address: { mutable: true, required: false },
+    "custom:country": { dataType: "String", mutable: true, maxLen: 100, minLen: 1 },
+    "custom:state": { dataType: "String", mutable: true, maxLen: 100, minLen: 1 },
+    "custom:pin_code": { dataType: "String", mutable: true, maxLen: 20, minLen: 1 },
   },
 });
