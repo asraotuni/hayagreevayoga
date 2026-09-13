@@ -6,7 +6,7 @@ A static portal for yoga therapy, Carnatic music, and astrology. Built with HTML
 
 - `/`: service selection homepage.
 - `/yoga-therapy/`: the full yoga portal, including introduction, location, Case Info, appointment booking, and testimonials.
-- `/yoga-therapy/#case-info`, `/yoga-therapy/#book-appointment`, `/yoga-therapy/#testimonials`: direct yoga feature links.
+- `/yoga-therapy/#case-info`, `/yoga-therapy/#book-appointment`, `/yoga-therapy/testimonials/`: direct yoga feature links.
 - `/carnatic-music/`: basic Carnatic music landing page.
 - `/astrology/`: basic astrology landing page.
 
@@ -42,3 +42,5 @@ Booking, persistent case records, payments, and role-based login are reserved fo
 ## Appointment booking
 
 The appointment page embeds https://calendar.app.google/cTrkzAT8y5eaLwraA. Google manages actual availability, booking, and notifications. Configure the schedule duration to one hour in Google Calendar. The portal collects preferred date, email, and counselling channel locally; these are not passed to Google automatically. Visitors must complete the Google form to book. Name fields await profile integration. A direct link is available if the embed cannot load.
+
+Each service has a dedicated `/testimonials/` page linked from its landing page or menu. Yoga therapy contains 17 recommendations and Carnatic music contains 10, including Vaishnavi Kappagantula’s recommendation. Four recommendations covering both services appear on both pages. Astrology shows an empty state. Older `/yoga-therapy/#testimonials` links forward to the dedicated yoga testimonials page.

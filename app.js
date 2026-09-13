@@ -1,9 +1,13 @@
 const intro = document.querySelector('#intro-panel');
-const panels = ['case-info', 'book-appointment', 'testimonials'].map(id => document.getElementById(id));
+const panels = ['case-info', 'book-appointment'].map(id => document.getElementById(id));
 const menus = [...document.querySelectorAll('[data-menu]')];
 
 function navigate() {
   const route = location.hash.slice(1) || 'home';
+  if (route === 'testimonials') {
+    location.replace('/yoga-therapy/testimonials/');
+    return;
+  }
   const activePanel = panels.find(panel => panel.id === route);
   intro.hidden = Boolean(activePanel);
   for (const panel of panels) panel.hidden = panel !== activePanel;

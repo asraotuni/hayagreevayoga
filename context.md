@@ -139,3 +139,31 @@ Verification: npm run build, server JS syntax, whitespace, and all built local l
 The user explicitly requests: every time they say “commit & push”, save/update context.md FIRST, then commit and push to both repositories. Preserve this preference for future sessions.
 
 Prepared this context update before committing the service-route refactor and appointment integration. Current scope: root service selector, full yoga portal at /yoga-therapy/, basic /carnatic-music/ and /astrology/ pages, Google appointment schedule embed and local preference form, updated build/server routes and documentation. Target branch is dev; push to origin (Bitbucket) and github (GitHub). Actual commit/push outcome must be checked in Git history and remote refs; this pre-commit note does not assert success.
+
+
+## Service-specific testimonial pages
+
+Created /yoga-therapy/testimonials/, /carnatic-music/testimonials/, and /astrology/testimonials/ as real static pages. Moved Vaishnavi Kappagantula's full recommendation, date, role, and LinkedIn reference from yoga to Carnatic music. Yoga retains Sindhuja, Kalyani, and Sai; astrology has an honest empty state. All recommendation cards retain individually scrollable, keyboard-focusable quote text and source links.
+
+Yoga sidebar links to its new page, and legacy #testimonials URLs forward there. Music and astrology landing pages link to their respective testimonials pages. Each testimonial page links back to its service. Build and Node server include nested routes; shared services.css styles the cards. Build, syntax, whitespace and built-link/content placement checks passed. These changes are local and uncommitted. The previous service-route/booking changes were committed and pushed to both remotes as 1451c3f. Continue saving context before future commit-and-push requests.
+
+
+## Additional user-supplied recommendations
+
+Added all 19 recommendations supplied in the pasted attachment, with the opening recommendation subsequently attributed by the user to Inés Ogayar, Early Years Teacher, March 11, 2025. User supplied her profile link: https://www.linkedin.com/in/in%C3%A9s-ogayar-14b693110/. Cards continue linking to Chandrika's recommendations page as their source.
+
+Added 14 cards to yoga and 9 to Carnatic music (four mixed-service recommendations appear on both). Total cards now: yoga 17; Carnatic music 10. Mixed-service authors: Venkata Ramesh Babu Pasupuleti (on behalf of Anjani), Kiranmayee Madakasira, Usha Chennapragada, Chalam Jayavarapu. Yoga-specific additions: Inés, Sirisha Pappu, Sreenivas Sunkavalli, Sabi Prasad, Sneha Gubba, Ramchandra Palekar, Aruna M, Vrushali Kalashetti, Pravin Kumar (Shobhana's recommendation), suma n. Music-specific additions: two distinct Krishnan Venkateswaran posts (Uma and Thulasi), Saran Kumar Palivela, Aruna Surampudi, Anusha Prayaga. Astrology unchanged, since this request was for yoga/music placement.
+
+Preserved full supplied recommendation text, names, roles where provided, dates, and on-behalf-of attribution. Removed degree labels, LinkedIn client metadata, placeholder roles, and more markers. Kept keyboard-focusable individually scrollable text regions. No independent verification of personal health claims; these remain attributed quotes. Build, whitespace, unique IDs, expected card counts, scroll-region counts, metadata cleanup, and built/source parity checks passed. Updated README counts. Changes remain local/uncommitted along with the service-specific testimonial page work.
+
+
+## Service sidebar consistency
+
+User clarified that Testimonials must appear in the left pane for Carnatic music, like yoga. Added a persistent left service sidebar to both Carnatic music and astrology landing/testimonial pages. Sidebar contains service-home link and Testimonials menu with current-page highlighting, plus All services. Removed the temporary prominent music testimonial button/top navigation item and astrology inline testimonial link. Narrow screens place navigation above content, consistent with yoga. Shared CSS version bumped to service-sidebar-10. Changes remain uncommitted.
+
+
+## Commit preparation: testimonial pages and service sidebars
+
+Saved context before commit/push per the user's standing instruction. Pending changes include dedicated testimonial pages for all three services, Vaishnavi's move to Carnatic music, 19 additional supplied recommendations (17 yoga cards / 10 music cards overall, with four mixed-service recommendations on both), and consistent left Testimonials navigation for Carnatic music and astrology. Yoga legacy #testimonials links forward to the dedicated page. Build/server support nested routes. Source attribution, scrollable text, empty astrology state, and documentation updates are included.
+
+Target branch dev, remotes origin (Bitbucket) and github (GitHub). Latest previous pushed commit is 1451c3f. This note precedes the new commit; verify its resulting hash and push status from Git rather than treating this note as confirmation. Build and whitespace checks have passed during implementation.

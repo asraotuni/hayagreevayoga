@@ -3,7 +3,7 @@ import { readFile } from 'node:fs/promises';
 const port = Number(process.env.PORT || 3000);
 const files = { '/': ['index.html', 'text/html'], '/index.html': ['index.html', 'text/html'], '/styles.css': ['styles.css', 'text/css'], '/app.js': ['app.js', 'text/javascript'] };
 files['/services.css'] = ['services.css', 'text/css'];
-for (const section of ['yoga-therapy', 'carnatic-music', 'astrology']) {
+for (const section of ['yoga-therapy', 'carnatic-music', 'astrology', 'yoga-therapy/testimonials', 'carnatic-music/testimonials', 'astrology/testimonials']) {
   for (const suffix of ['', '/', '/index.html']) {
     files[`/${section}${suffix}`] = [`${section}/index.html`, 'text/html'];
   }
