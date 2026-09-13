@@ -1,157 +1,29 @@
 const authMounts = document.querySelectorAll("[data-auth-mount]");
+let auth, authConfig, signedInProfile;
 
-for (const mount of authMounts) {
-  mount.innerHTML = '<button class="auth-button" type="button">Sign in</button>';
-}
+function button(label, handler) { const b = document.createElement("button"); b.className = "auth-button"; b.type = "button"; b.textContent = label; b.addEventListener("click", handler); return b; }
+function render(profile) { authMounts.forEach((mount) => mount.replaceChildren(button(profile?.firstName || "Sign in", profile ? showProfile : showSignIn))); }
+function fillProfileFields(profile) { [["first-name", profile?.firstName], ["last-name", profile?.lastName], ["appointment-first-name", profile?.firstName], ["appointment-last-name", profile?.lastName]].forEach(([id, value]) => { const field = document.getElementById(id); if (field && value) field.value = value; }); }
+render();
 
 const dialog = document.createElement("dialog");
 dialog.className = "auth-dialog";
-dialog.innerHTML = `
-  <form class="auth-card" method="dialog">
-    <button class="auth-close" type="button" aria-label="Close sign in">×</button>
-    <p class="auth-kicker">HAYAGREEVA</p>
-    <h2>Sign in to your profile</h2>
-    <p id="auth-message" class="auth-message">Use Google or receive a one-time code by email.</p>
-    <button id="google-sign-in" class="google-button" type="button"><span aria-hidden="true">G</span> Continue with Google</button>
-    <p class="auth-divider"><span>or</span></p>
-    <label for="auth-email">Email address</label>
-    <input id="auth-email" type="email" autocomplete="email" placeholder="you@example.com" required>
-    <button id="email-code-request" class="auth-primary" type="button">Email me a code</button>
-    <div id="otp-fields" hidden>
-      <label for="auth-code">One-time code</label>
-      <input id="auth-code" inputmode="numeric" autocomplete="one-time-code" pattern="[0-9]{6}" maxlength="6" placeholder="6-digit code">
-      <button id="email-code-confirm" class="auth-primary" type="button">Verify and sign in</button>
-    </div>
-    <p class="auth-small">Mobile sign-in will be added later.</p>
-  </form>`;
+dialog.innerHTML = `<form class="auth-card" method="dialog" novalidate><button class="auth-close" type="button" aria-label="Close sign in">×</button><p class="auth-kicker">HAYAGREEVA</p><h2>Sign in to your profile</h2><p id="auth-message" class="auth-message">Use Google or receive a one-time code by email.</p><button id="google-sign-in" class="google-button" type="button"><span aria-hidden="true">G</span> Continue with Google</button><p class="auth-divider"><span>or</span></p><label for="auth-email">Email address</label><input id="auth-email" type="email" autocomplete="email" placeholder="you@example.com" required><button id="email-code-request" class="auth-primary" type="button">Email me a code</button><div id="otp-fields" hidden><label for="auth-code">One-time code</label><input id="auth-code" inputmode="numeric" autocomplete="one-time-code" pattern="[0-9]{6}" maxlength="6" placeholder="6-digit code"><button id="email-code-confirm" class="auth-primary" type="button">Verify and sign in</button></div><p class="auth-small">Mobile sign-in will be added later.</p></form>`;
 document.body.append(dialog);
-
-const message = dialog.querySelector("#auth-message");
-const email = dialog.querySelector("#auth-email");
-const otpFields = dialog.querySelector("#otp-fields");
-const code = dialog.querySelector("#auth-code");
-let auth;
-let authConfig;
-
-function setMessage(text, error = false) {
-  message.textContent = text;
-  message.dataset.error = String(error);
-}
-
-async function loadConfig() {
-  if (authConfig) return authConfig;
-  const response = await fetch("/amplify_outputs.json", { cache: "no-store" });
-  if (!response.ok) throw new Error("Authentication is not configured for this environment yet.");
-  authConfig = await response.json();
-  return authConfig;
-}
-
-async function loadAuth() {
-  if (auth) return auth;
-  const config = await loadConfig();
-  const [{ Amplify }, methods] = await Promise.all([
-    import("https://esm.sh/aws-amplify@6"),
-    import("https://esm.sh/aws-amplify@6/auth"),
-  ]);
-  Amplify.configure(config);
-  auth = methods;
-  return auth;
-}
-
-async function refreshProfile() {
-  try {
-    const client = await loadAuth();
-    const user = await client.getCurrentUser();
-    const attributes = await client.fetchUserAttributes();
-    const label = attributes.given_name || user.username || "Profile";
-    for (const mount of authMounts) {
-      mount.innerHTML = `<button class="auth-button" type="button" data-profile>${label}</button>`;
-    }
-    document.querySelectorAll("[data-profile]").forEach((button) => {
-      button.addEventListener("click", async () => {
-        if (confirm("Sign out of your profile?")) {
-          await client.signOut();
-          location.reload();
-        }
-      });
-    });
-  } catch {
-    // A missing config or no current session simply leaves the Sign in button.
-  }
-}
-
-authMounts.forEach((mount) => {
-  mount.addEventListener("click", () => {
-    setMessage("Use Google or receive a one-time code by email.");
-    dialog.showModal();
-  });
-});
-
-dialog.querySelector("#google-sign-in").addEventListener("click", async () => {
-  try {
-    setMessage("Opening Google sign in…");
-    const config = await loadConfig();
-    const oauth = config.auth?.oauth;
-    const redirectUri = oauth?.redirect_sign_in_uri?.find(
-      (url) => new URL(url).origin === location.origin,
-    );
-    if (!oauth?.domain || !config.auth?.user_pool_client_id || !redirectUri) {
-      throw new Error("This site origin is not configured for Google sign in.");
-    }
-    const params = new URLSearchParams({
-      client_id: config.auth.user_pool_client_id,
-      redirect_uri: redirectUri,
-      response_type: oauth.response_type || "code",
-      scope: (oauth.scopes || ["openid", "email", "profile"]).join(" "),
-      identity_provider: "Google",
-    });
-    location.assign(`https://${oauth.domain}/oauth2/authorize?${params}`);
-  } catch (error) {
-    setMessage(error.message || "Google sign in is unavailable.", true);
-  }
-});
-
-dialog.querySelector(".auth-close").addEventListener("click", () => dialog.close());
-
-dialog.querySelector("#email-code-request").addEventListener("click", async () => {
-  if (!email.reportValidity()) return;
-  try {
-    setMessage("Sending your one-time code…");
-    const client = await loadAuth();
-    const result = await client.signIn({
-      username: email.value.trim(),
-      options: { authFlowType: "USER_AUTH", preferredChallenge: "EMAIL_OTP" },
-    });
-    if (result.nextStep.signInStep === "CONFIRM_SIGN_IN_WITH_EMAIL_CODE") {
-      otpFields.hidden = false;
-      code.focus();
-      setMessage("Check your email for a six-digit code.");
-    } else if (result.isSignedIn) {
-      dialog.close();
-      await refreshProfile();
-    } else {
-      setMessage("Unable to start email sign in. Please try again.", true);
-    }
-  } catch (error) {
-    setMessage(error.message || "Unable to send a code.", true);
-  }
-});
-
-dialog.querySelector("#email-code-confirm").addEventListener("click", async () => {
-  if (!code.reportValidity()) return;
-  try {
-    setMessage("Verifying your code…");
-    const client = await loadAuth();
-    const result = await client.confirmSignIn({ challengeResponse: code.value.trim() });
-    if (result.isSignedIn) {
-      dialog.close();
-      await refreshProfile();
-    } else {
-      setMessage("That code could not complete sign in. Please request a new code.", true);
-    }
-  } catch (error) {
-    setMessage(error.message || "That code is invalid or has expired.", true);
-  }
-});
-
+const profileDialog = document.createElement("dialog");
+profileDialog.className = "auth-dialog";
+profileDialog.innerHTML = `<section class="auth-card" aria-labelledby="profile-title"><button class="auth-close" type="button" aria-label="Close profile">×</button><p class="auth-kicker">HAYAGREEVA</p><h2 id="profile-title">Your profile</h2><dl class="profile-details"><div><dt>Name</dt><dd data-profile-name></dd></div><div><dt>Email</dt><dd data-profile-email></dd></div></dl><button class="auth-primary" data-sign-out type="button">Sign out</button></section>`;
+document.body.append(profileDialog);
+const message = dialog.querySelector("#auth-message"), email = dialog.querySelector("#auth-email"), otpFields = dialog.querySelector("#otp-fields"), code = dialog.querySelector("#auth-code");
+function setMessage(text, error = false) { message.textContent = text; message.dataset.error = String(error); }
+function showSignIn() { setMessage("Use Google or receive a one-time code by email."); dialog.showModal(); }
+function showProfile() { if (!signedInProfile) return showSignIn(); profileDialog.querySelector("[data-profile-name]").textContent = [signedInProfile.firstName, signedInProfile.lastName].filter(Boolean).join(" "); profileDialog.querySelector("[data-profile-email]").textContent = signedInProfile.email || "Email not available"; profileDialog.showModal(); }
+async function loadConfig() { if (authConfig) return authConfig; const response = await fetch("/amplify_outputs.json", { cache: "no-store" }); if (!response.ok) throw new Error("Authentication is not configured for this environment yet."); authConfig = await response.json(); return authConfig; }
+async function loadAuth() { if (auth) return auth; const config = await loadConfig(); const [{ Amplify }, methods] = await Promise.all([import("https://esm.sh/aws-amplify@6"), import("https://esm.sh/aws-amplify@6/auth")]); Amplify.configure(config); auth = methods; return auth; }
+async function refreshProfile(retries = 0) { try { const client = await loadAuth(), user = await client.getCurrentUser(), attributes = await client.fetchUserAttributes(); signedInProfile = { firstName: attributes.given_name || attributes.name?.split(" ")[0] || "Profile", lastName: attributes.family_name || attributes.name?.split(" ").slice(1).join(" ") || "", email: attributes.email || user.signInDetails?.loginId || "" }; render(signedInProfile); fillProfileFields(signedInProfile); } catch { if (retries < 4 && new URLSearchParams(location.search).has("code")) window.setTimeout(() => refreshProfile(retries + 1), 500); } }
+dialog.querySelector("#google-sign-in").addEventListener("click", async () => { try { setMessage("Opening Google sign in…"); const config = await loadConfig(), oauth = config.auth?.oauth, redirectUri = oauth?.redirect_sign_in_uri?.find((url) => new URL(url).origin === location.origin); if (!oauth?.domain || !config.auth?.user_pool_client_id || !redirectUri) throw new Error("This site origin is not configured for Google sign in."); const params = new URLSearchParams({ client_id: config.auth.user_pool_client_id, redirect_uri: redirectUri, response_type: oauth.response_type || "code", scope: (oauth.scopes || ["openid", "email", "profile"]).join(" "), identity_provider: "Google" }); location.assign(`https://${oauth.domain}/oauth2/authorize?${params}`); } catch (error) { setMessage(error.message || "Google sign in is unavailable.", true); } });
+dialog.querySelector(".auth-close").addEventListener("click", () => dialog.close()); profileDialog.querySelector(".auth-close").addEventListener("click", () => profileDialog.close());
+profileDialog.querySelector("[data-sign-out]").addEventListener("click", async () => { await (await loadAuth()).signOut(); profileDialog.close(); signedInProfile = undefined; render(); });
+dialog.querySelector("#email-code-request").addEventListener("click", async () => { if (!email.reportValidity()) return; try { setMessage("Sending your one-time code…"); const result = await (await loadAuth()).signIn({ username: email.value.trim(), options: { authFlowType: "USER_AUTH", preferredChallenge: "EMAIL_OTP" } }); if (result.nextStep.signInStep === "CONFIRM_SIGN_IN_WITH_EMAIL_CODE") { otpFields.hidden = false; code.focus(); setMessage("Check your email for a six-digit code."); } else if (result.isSignedIn) { dialog.close(); await refreshProfile(); } else setMessage("Unable to start email sign in. Please try again.", true); } catch (error) { setMessage(error.message || "Unable to send a code.", true); } });
+dialog.querySelector("#email-code-confirm").addEventListener("click", async () => { if (!code.reportValidity()) return; try { setMessage("Verifying your code…"); const result = await (await loadAuth()).confirmSignIn({ challengeResponse: code.value.trim() }); if (result.isSignedIn) { dialog.close(); await refreshProfile(); } else setMessage("That code could not complete sign in. Please request a new code.", true); } catch (error) { setMessage(error.message || "That code is invalid or has expired.", true); } });
 refreshProfile();
