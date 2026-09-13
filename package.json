@@ -7,5 +7,11 @@
     "dev": "node scripts/serve.mjs",
     "start": "node scripts/serve.mjs",
     "build": "node scripts/build.mjs"
+  },
+  "dependencies": {
+    "@aws-amplify/backend": "^1.25.0",
+    "@aws-amplify/backend-cli": "^1.10.0",
+    "aws-amplify": "^6.20.0",
+    "typescript": "^5.9.3"
   }
 }

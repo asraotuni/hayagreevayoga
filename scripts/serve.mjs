@@ -1,7 +1,7 @@
 import http from 'node:http';
 import { readFile } from 'node:fs/promises';
 const port = Number(process.env.PORT || 3000);
-const files = { '/': ['index.html', 'text/html'], '/index.html': ['index.html', 'text/html'], '/styles.css': ['styles.css', 'text/css'], '/app.js': ['app.js', 'text/javascript'] };
+const files = { '/': ['index.html', 'text/html'], '/index.html': ['index.html', 'text/html'], '/styles.css': ['styles.css', 'text/css'], '/app.js': ['app.js', 'text/javascript'], '/auth-client.js': ['auth-client.js', 'text/javascript'], '/amplify_outputs.json': ['amplify_outputs.json', 'application/json'] };
 files['/services.css'] = ['services.css', 'text/css'];
 for (const section of ['yoga-therapy', 'carnatic-music', 'astrology', 'yoga-therapy/testimonials', 'carnatic-music/testimonials', 'astrology/testimonials']) {
   for (const suffix of ['', '/', '/index.html']) {

@@ -39,6 +39,19 @@ The yoga therapy landing page flows through the introduction, About Chandrika, a
 
 Booking, persistent case records, payments, and role-based login are reserved for future work.
 
+## Sign in
+
+The site includes a top-right Sign in / Profile control. AWS Amplify Gen 2 Auth is defined in `amplify/auth/resource.ts` for passwordless email OTP and Google. SMS/mobile authentication is intentionally not enabled.
+
+Before deploying the backend, configure these Amplify secrets for the branch:
+
+- `GOOGLE_CLIENT_ID`
+- `GOOGLE_CLIENT_SECRET`
+
+Set `AUTH_REDIRECT_URLS` as a comma-separated list of permitted application return URLs, for example `http://localhost:8000/,https://your-branch.amplifyapp.com/`. After the first backend deployment, use the Cognito domain from `amplify_outputs.json` to add Google’s required OAuth redirect URI (`https://<cognito-domain>/oauth2/idpresponse`) in Google Cloud Console. Do not put the Google client secret in source code or a frontend environment variable.
+
+The Amplify build deploys the backend, explicitly generates `amplify_outputs.json`, and publishes it with the static site. Until the backend is deployed, the sign-in dialog remains visible but reports that authentication is not configured. Local development needs an Amplify sandbox that generates `amplify_outputs.json` before real sign-in can work.
+
 ## Appointment booking
 
 The appointment page embeds https://calendar.app.google/cTrkzAT8y5eaLwraA. Google manages actual availability, booking, and notifications. Configure the schedule duration to one hour in Google Calendar. The portal collects preferred date, email, and counselling channel locally; these are not passed to Google automatically. Visitors must complete the Google form to book. Name fields await profile integration. A direct link is available if the embed cannot load.
