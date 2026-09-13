@@ -8,7 +8,7 @@ const dialog = document.createElement("dialog");
 dialog.className = "auth-dialog";
 dialog.innerHTML = `
   <form class="auth-card" method="dialog">
-    <button class="auth-close" value="cancel" aria-label="Close sign in">×</button>
+    <button class="auth-close" type="button" aria-label="Close sign in">×</button>
     <p class="auth-kicker">HAYAGREEVA</p>
     <h2>Sign in to your profile</h2>
     <p id="auth-message" class="auth-message">Use Google or receive a one-time code by email.</p>
@@ -31,17 +31,24 @@ const email = dialog.querySelector("#auth-email");
 const otpFields = dialog.querySelector("#otp-fields");
 const code = dialog.querySelector("#auth-code");
 let auth;
+let authConfig;
 
 function setMessage(text, error = false) {
   message.textContent = text;
   message.dataset.error = String(error);
 }
 
-async function loadAuth() {
-  if (auth) return auth;
+async function loadConfig() {
+  if (authConfig) return authConfig;
   const response = await fetch("/amplify_outputs.json", { cache: "no-store" });
   if (!response.ok) throw new Error("Authentication is not configured for this environment yet.");
-  const config = await response.json();
+  authConfig = await response.json();
+  return authConfig;
+}
+
+async function loadAuth() {
+  if (auth) return auth;
+  const config = await loadConfig();
   const [{ Amplify }, methods] = await Promise.all([
     import("https://esm.sh/aws-amplify@6"),
     import("https://esm.sh/aws-amplify@6/auth"),
@@ -83,12 +90,28 @@ authMounts.forEach((mount) => {
 dialog.querySelector("#google-sign-in").addEventListener("click", async () => {
   try {
     setMessage("Opening Google sign in…");
-    const client = await loadAuth();
-    await client.signInWithRedirect({ provider: "Google" });
+    const config = await loadConfig();
+    const oauth = config.auth?.oauth;
+    const redirectUri = oauth?.redirect_sign_in_uri?.find(
+      (url) => new URL(url).origin === location.origin,
+    );
+    if (!oauth?.domain || !config.auth?.user_pool_client_id || !redirectUri) {
+      throw new Error("This site origin is not configured for Google sign in.");
+    }
+    const params = new URLSearchParams({
+      client_id: config.auth.user_pool_client_id,
+      redirect_uri: redirectUri,
+      response_type: oauth.response_type || "code",
+      scope: (oauth.scopes || ["openid", "email", "profile"]).join(" "),
+      identity_provider: "Google",
+    });
+    location.assign(`https://${oauth.domain}/oauth2/authorize?${params}`);
   } catch (error) {
     setMessage(error.message || "Google sign in is unavailable.", true);
   }
 });
+
+dialog.querySelector(".auth-close").addEventListener("click", () => dialog.close());
 
 dialog.querySelector("#email-code-request").addEventListener("click", async () => {
   if (!email.reportValidity()) return;
