@@ -77,14 +77,13 @@
             <div class="field"><label for="appointment-first-name">First Name</label><input id="appointment-first-name" name="firstName" readonly placeholder="From your profile" aria-describedby="appointment-profile-help"></div>
             <div class="field"><label for="appointment-last-name">Last Name</label><input id="appointment-last-name" name="lastName" readonly placeholder="From your profile" aria-describedby="appointment-profile-help"></div>
             <div class="field appointment-wide"><small id="appointment-profile-help">Your name will be filled from your profile once profile sign-in is available.</small></div>
-            <div class="field appointment-wide"><label for="appointment-email">Appointment email <span>(required)</span></label><input id="appointment-email" name="email" type="email" autocomplete="email" required maxlength="254" placeholder="you@example.com" aria-describedby="appointment-email-help"><small id="appointment-email-help">Use the email address where you want to receive your appointment notification.</small></div>
+            <div class="field appointment-wide"><label for="appointment-email">Appointment email</label><input id="appointment-email" name="email" type="email" autocomplete="email" readonly placeholder="From your profile" aria-describedby="appointment-email-help"><small id="appointment-email-help">This email comes from your profile and will be used in Google’s booking form.</small></div>
           </div>
         </fieldset>
         <fieldset>
           <legend>Your session</legend>
           <div class="form-grid">
-            <div class="field"><label for="appointment-date">Desirable date <span>(required)</span></label><input id="appointment-date" name="date" type="date" required aria-describedby="appointment-date-help"><small id="appointment-date-help">Choose your preferred date in India Standard Time.</small></div>
-            <div class="field"><label for="appointment-channel">Counselling channel <span>(required)</span></label><select id="appointment-channel" name="channel" required><option value="">Select a channel</option><option value="online">Online</option><option value="therapy-center">At therapy center</option></select></div>
+            <fieldset class="field appointment-wide"><legend>Counselling channel <span>(required)</span></legend><div class="radio-options"><label><input type="radio" name="channel" value="online" required> Online</label><label><input type="radio" name="channel" value="therapy-center"> At therapy center</label></div></fieldset>
 
           </div>
           <p id="appointment-center" class="draft-notice" hidden>Hayagreeva Yoga School<br>Club House, Gopalan Habitat Splendour<br>Brookefield, Kundalahalli, Bangalore 560037</p>

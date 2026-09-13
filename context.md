@@ -229,3 +229,7 @@ Removed the incompatible schema additions. First/last name remain stored in Cogn
 ## Account menu correction
 
 User clarified expected account interaction. The signed-in first-name button now opens an account menu with exactly two actions: Profile and Sign out. Profile opens `/profile/`; Sign out immediately ends the Cognito session and restores the Sign in control. The editable Profile page now has explicit Save profile and Cancel actions; Cancel returns to the service selector without saving changes.
+
+## Appointment and Profile flow refinement
+
+Appointment email is now populated from the signed-in profile and read-only. Removed the local desirable-date field; users choose live date/time only in the embedded Google appointment calendar. Counselling channel is now an Online / At therapy center required radio choice, with therapy-center address shown when selected. Profile Save now returns to the main landing page after successful save; Cancel already returns there without saving.
