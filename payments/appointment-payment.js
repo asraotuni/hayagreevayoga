@@ -1,5 +1,5 @@
 import { loadAuth, loadConfig } from '../auth/auth-client.js';
-import { PAYMENT } from './config.js';
+import { PAYMENT } from './config.js?v=chsaripalli-1';
 const form = document.querySelector('#payment-reference-form');
 const status = document.querySelector('#payment-reference-status');
 const submit = form.querySelector('[type="submit"]');

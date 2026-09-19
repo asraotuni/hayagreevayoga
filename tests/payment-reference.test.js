@@ -10,7 +10,7 @@ function event(body = {}, claims = {}) {
 test('stores authenticated identity, configured amount, and unverified payment status', () => {
   const r = paymentRecord(event({ email: 'wrong@example.com', amount: 1 }));
   assert.equal(r.email, 'member@example.com'); assert.equal(r.amount, 2000);
-  assert.equal(r.upiId, 'hayagreeva@icici'); assert.equal(r.paymentStatus, 'AWAITING_REALIZATION');
+  assert.equal(r.upiId, 'chsaripalli@okicici'); assert.equal(r.paymentStatus, 'AWAITING_REALIZATION');
   assert.equal(r.bookingStatus, 'USER_REPORTED_GOOGLE_BOOKING');
 });
 test('rejects missing/unverified identity and invalid reference or attestation', () => {

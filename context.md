@@ -322,3 +322,19 @@ Reproduced the reported npm ci failure: four missing @opentelemetry/core@2.0.0 e
 ## GitHub-only remote (2026-09-19)
 
 Removed Bitbucket and renamed github to origin at the user’s request. The sole remote is `origin`: `git@github.com:asraotuni/hayagreevayoga.git`. Future commit-and-push requests should update context.md first and push only to GitHub origin; historical instructions to push to both remotes are superseded. The dev branch currently has no upstream; approval to set origin/dev as upstream was declined. Explicit `git push origin dev` remains available when requested. No commit or push performed.
+
+## Updated UPI destination (2026-09-19)
+
+Changed the current UPI ID to `chsaripalli@okicici` at the user's request, superseding the previous ID in historical notes. Updated shared frontend/backend payment configuration, visible ID, QR alt text, documentation, and the payment-reference test. Regenerated the local QR for the new ID with the same INR 2,000 amount and added a QR URL cache version. QR encoding verification, payment-reference tests, site build and whitespace checks passed. Changes are local; no commit, push or deployment performed.
+
+## UPI destination commit and push (2026-09-19)
+
+Saved context before the requested commit and push. This commit updates the UPI destination to `chsaripalli@okicici` and its INR 2,000 QR, with matching payment configuration, page text, documentation and test expectation. Tests, QR verification, build and whitespace checks passed. Target is dev on GitHub origin only. This note precedes the commit/push; check Git for the resulting commit and push status.
+
+## UPI display cache correction (2026-09-19)
+
+User reported the old UPI ID beside the updated QR. Source HTML and payment config already contain chsaripalli@okicici, but appointment-payment.js overwrites the visible ID from its unversioned config import. Added a version to both the page's payment script URL and that script's config import to prevent stale cached modules from restoring the old display/copy value after deployment. Tests, QR verification, build and whitespace checks passed. This fixes a possible cache cause; the user's browser cache was not inspected. Changes remain local after the previous commit permission was declined.
+
+## UPI and cache fix release preparation (2026-09-19)
+
+Updated context before the renewed commit-and-push request. Commit scope includes the chsaripalli@okicici UPI ID, regenerated INR 2,000 QR, visible/copy details, versioned payment script and config import, documentation and test expectation. Tests, QR validation, build and whitespace checks passed. Push target is GitHub origin/dev only. This note precedes execution; Git records determine commit/push success.

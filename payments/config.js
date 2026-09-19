@@ -1,6 +1,6 @@
 // Public payment details. The server also uses these values for reference records.
 export const PAYMENT = Object.freeze({
-  upiId: 'hayagreeva@icici',
+  upiId: 'chsaripalli@okicici',
   payeeName: 'Hayagreeva',
   amount: 2000,
   currency: 'INR',

@@ -64,4 +64,4 @@ Each service has a dedicated `/testimonials/` page linked from its landing page 
 
 ## UPI payment
 
-The fee is ₹2,000, paid to `hayagreeva@icici` using the local QR or UPI app link after booking. Transaction references are stored for manual verification against the user's login email. No SES or Razorpay integration is used. Run `npm test` for reference validation/storage and QR checks.
+The fee is ₹2,000, paid to `chsaripalli@okicici` using the local QR or UPI app link after booking. Transaction references are stored for manual verification against the user's login email. No SES or Razorpay integration is used. Run `npm test` for reference validation/storage and QR checks.

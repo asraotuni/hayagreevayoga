@@ -3,7 +3,7 @@
 The final flow is deliberately simple:
 
 1. Complete the booking in Chandrika's existing embedded Google appointment schedule. Google sends its normal booking confirmation.
-2. Pay **₹2,000** by UPI to **hayagreeva@icici** using the QR/ID, or by bank transfer to **ICICI Bank**, account **7427 0150 2003**, IFSC **ICIC0007427**.
+2. Pay **₹2,000** by UPI to **chsaripalli@okicici** using the QR/ID, or by bank transfer to **ICICI Bank**, account **7427 0150 2003**, IFSC **ICIC0007427**.
 3. Submit the UPI or bank transfer transaction number. The portal saves it with the signed-in login email and displays **“Your appointment is subject to payment realization.”**
 
 There are no slot holds, Calendar API credentials, SES emails, or payment gateway. The Google schedule continues controlling availability, duration, joining details, and booking emails. The Google iframe does not expose the booking to our page, so staff match the submitted login email and reference to the booking manually. Use the same email in Google's booking form. A submitted reference is not proof that funds arrived.
@@ -12,7 +12,7 @@ There are no slot holds, Calendar API credentials, SES emails, or payment gatewa
 
 Google permits an appointment schedule description that appears on the booking page, in confirmation emails, and in the event description. Edit Chandrika's existing appointment schedule in Google Calendar, go to its booking-page **Description**, and add:
 
-> Your appointment is subject to payment realization. After booking, please pay ₹2,000 by UPI to hayagreeva@icici and submit your UPI transaction number at https://hayagreeva.hiramyatech.com/yoga-therapy/#book-appointment.
+> Your appointment is subject to payment realization. After booking, please pay ₹2,000 by UPI to chsaripalli@okicici and submit your UPI transaction number at https://hayagreeva.hiramyatech.com/yoga-therapy/#book-appointment.
 
 Save the schedule. This setting belongs to Google Calendar, not the embedded page. It has **not** been changed by this repository update. The wording is already displayed on the portal. See [Google's appointment schedule settings](https://support.google.com/calendar/answer/10729749).
 
