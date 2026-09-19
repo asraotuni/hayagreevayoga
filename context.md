@@ -136,7 +136,7 @@ Verification: npm run build, server JS syntax, whitespace, and all built local l
 
 ## Standing workflow preference and commit preparation
 
-The user explicitly requests: every time they say “commit & push”, save/update context.md FIRST, then commit and push to both repositories. Preserve this preference for future sessions.
+The user explicitly requests: every time they say “commit & push”, save/update context.md FIRST, then commit and push to GitHub origin. As of 2026-09-19, GitHub is the sole remote; the earlier two-repository instruction is superseded.
 
 Prepared this context update before committing the service-route refactor and appointment integration. Current scope: root service selector, full yoga portal at /yoga-therapy/, basic /carnatic-music/ and /astrology/ pages, Google appointment schedule embed and local preference form, updated build/server routes and documentation. Target branch is dev; push to origin (Bitbucket) and github (GitHub). Actual commit/push outcome must be checked in Git history and remote refs; this pre-commit note does not assert success.
 
@@ -313,3 +313,12 @@ The yoga testimonial page lacked the service sidebar. It now uses the same heade
 ## Wider Google booking calendar (2026-09-19)
 
 Changed the appointment workflow to a full-width calendar above the payment area, removed the appointment panel's 1120px maximum, and reduced its side margins to 20px. Payment details and the reference form now share a row below the calendar on wide screens and stack on smaller screens. Sidebar remains intact, payment sections remain unconditional, and the calendar height remains 560px. Google controls the number of visible days; widening does not force a seven-day view. Build and whitespace checks passed. Local only.
+
+## Amplify clean-install lockfile repair (2026-09-19)
+
+Reproduced the reported npm ci failure: four missing @opentelemetry/core@2.0.0 entries beneath Amplify's bundled data/graphql constructs. Regenerated package-lock.json in an isolated temporary directory; the only dependency changes are the four missing entries (64 lines), with no package.json changes or dependency upgrades. Verified a full npm ci successfully installed 980 packages using npm 11.13.0 / Node 24.16.0; existing peer/deprecation warnings remain non-fatal. npm test, npm run build and git diff --check passed. Repository node_modules was not replaced. Repair is local; commit/push and a new Amplify deployment are still needed.
+
+
+## GitHub-only remote (2026-09-19)
+
+Removed Bitbucket and renamed github to origin at the user’s request. The sole remote is `origin`: `git@github.com:asraotuni/hayagreevayoga.git`. Future commit-and-push requests should update context.md first and push only to GitHub origin; historical instructions to push to both remotes are superseded. The dev branch currently has no upstream; approval to set origin/dev as upstream was declined. Explicit `git push origin dev` remains available when requested. No commit or push performed.
