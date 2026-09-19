@@ -8,11 +8,13 @@ function navigate() {
     location.replace('/yoga-therapy/testimonials/');
     return;
   }
-  const activePanel = panels.find(panel => panel.id === route);
+  const appointmentSteps = ['live-booking', 'upi-payment', 'payment-reference-section'];
+  const panelRoute = appointmentSteps.includes(route) ? 'book-appointment' : route;
+  const activePanel = panels.find(panel => panel.id === panelRoute);
   intro.hidden = Boolean(activePanel);
   for (const panel of panels) panel.hidden = panel !== activePanel;
   for (const link of menus) {
-    if (link.dataset.menu === route) link.setAttribute('aria-current', 'page');
+    if (link.dataset.menu === panelRoute) link.setAttribute('aria-current', 'page');
     else link.removeAttribute('aria-current');
   }
   if (activePanel) activePanel.querySelector('h1').focus({ preventScroll: true });
@@ -73,28 +75,10 @@ document.querySelector('#edit-details').addEventListener('click', () => {
 form.querySelector('[type="submit"]').disabled = false;
 
 
-// Google owns live availability and booking. Local preferences are not sent
-// to its cross-origin booking page; never claim a booking from iframe loading.
-// Google owns live availability and booking. Local preferences are not sent
-// to its cross-origin booking page; never claim a booking from iframe loading.
-const appointmentForm = document.querySelector('#appointment-form');
+// Show the therapy-center address when that counselling preference is selected.
 const appointmentChannels = document.querySelectorAll('input[name="channel"]');
 const appointmentCenter = document.querySelector('#appointment-center');
 appointmentChannels.forEach(channel => channel.addEventListener('change', () => {
   const chosen = document.querySelector('input[name="channel"]:checked');
   appointmentCenter.hidden = !chosen || chosen.value !== 'therapy-center';
 }));
-appointmentForm.addEventListener('reset', () => {
-  document.querySelector('#booking-preferences').textContent = '';
-  appointmentCenter.hidden = true;
-});
-appointmentForm.addEventListener('submit', event => {
-  event.preventDefault();
-  if (!appointmentForm.reportValidity()) return;
-  const channel = document.querySelector('input[name="channel"]:checked').value === 'online' ? 'Online' : 'At therapy center';
-  document.querySelector('#booking-preferences').textContent = `Your preference: ${channel}. Choose your date and time in Google Calendar below. Use ${document.querySelector('#appointment-email').value} in Google’s booking form. These details have not been submitted.`;
-  document.querySelector('#live-booking-heading').focus();
-  document.querySelector('#live-booking').scrollIntoView({ block: 'start', behavior: 'smooth' });
-});
-appointmentForm.addEventListener('input', () => { document.querySelector('#booking-preferences').textContent = ''; });
-appointmentForm.querySelector('[type="submit"]').disabled = false;

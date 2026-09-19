@@ -1,5 +1,6 @@
 import { defineBackend } from "@aws-amplify/backend";
 import { auth } from "./auth/resource";
+import { addPaymentReferences } from "./payments/resource";
 
 const backend = defineBackend({ auth });
 const { cfnUserPool, cfnUserPoolClient } = backend.auth.resources.cfnResources;
@@ -15,3 +16,6 @@ cfnUserPoolClient.explicitAuthFlows = [
   "ALLOW_REFRESH_TOKEN_AUTH",
   "ALLOW_USER_AUTH",
 ];
+
+const payments = addPaymentReferences(backend.createStack("payment-references"), backend.auth.resources.userPool, backend.auth.resources.userPoolClient);
+backend.addOutput({ custom: { paymentReferences: { endpoint: payments.endpoint } } });

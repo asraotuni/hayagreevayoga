@@ -1,6 +1,6 @@
 # Project context
 
-Last updated: 2026-09-13 (UTC).
+Last updated: 2026-09-18 (UTC).
 
 ## Purpose and scope
 
@@ -237,3 +237,79 @@ Appointment email is now populated from the signed-in profile and read-only. Rem
 ## Yoga appointment layout refinements
 
 Removed the therapist/qualification note from the Yoga Therapy left sidebar. Counselling channel radio inputs now appear before their labels and are left-aligned. Increased the embedded Google appointment frame height to 960px for a more consistent scrolling area. Google’s appointment-schedule iframe provides host-side width/height controls but does not offer supported parameters to force seven displayed days or a Monday week start; those remain controlled by Google’s booking page and schedule configuration.
+
+
+## Auth file organization (2026-09-18)
+
+Moved root `auth-client.js` to `auth/auth-client.js` and root `profile.js` to `profile/profile.js`. Backend Cognito definitions remain in `amplify/auth/resource.ts`; generated `amplify_outputs.json` retains its root location. Updated all eight HTML pages, the static build, local server routes, and README. The build removes the two obsolete root script artifacts from prior builds. Authentication behavior is unchanged. These changes are local and uncommitted.
+
+
+## UPI payments and conditional confirmation (2026-09-18)
+
+User chose direct UPI instead of Razorpay: pay `hayagreeva@icici`, fee ₹2,000, and email the signed-in user's login email after collecting the transaction reference. Added payment steps after the existing Google Calendar iframe on Yoga Book Appointment, a locally generated QR (fixed INR 2,000 UPI URI), UPI app link/copy control, and a form for UTR, booked IST date/time, channel, and booking/payment attestation. Google continues sending its own initial booking email. The iframe cannot expose its selected slot, so the form's slot is user-reported, not verified.
+
+New `payments/` browser assets and `amplify/payments/` backend implement a Cognito JWT-authorized HTTP API, Lambda, durable DynamoDB references, and SES follow-up email with explicit “subject to payment realization” wording. Recipient comes only from the verified Cognito ID token; fee is server controlled. References always remain AWAITING_REALIZATION; no automatic bank verification or calendar writes. Atomic reference/slot reservation prevents duplicate submissions; five new submissions per user/day. Email failures retain the reference with an honest pending message and require manual follow-up; no automatic resend after ambiguous SES delivery.
+
+User subsequently chose `chsaripalli@gmail.com` as sender; the backend defaults to it, with `APPOINTMENT_FROM_EMAIL` available as an override. Verify the sender in SES ap-south-1 and ensure SES production access (or verified test recipients) before real delivery. Missing API configuration blocks submission; failed SES delivery keeps the reference and reports email pending. Setup/manual-review details are in `payments/README.md`. Changes remain local, together with the prior auth file reorganization. No deployment, real payment, calendar booking, or email sent during implementation.
+
+Validation: nine payment/QR tests passed, including duplicate and failed-email behavior. Static build, JavaScript syntax, TypeScript checks, CDK synthesis with a bundled Lambda, built asset references/parity, and whitespace checks passed. SES live identity/account checks could not run in the sandbox; the escalation request was declined, so sender verification and SES production access remain unconfirmed. No live emails sent and no AWS deployment performed. npm reports 20 dependency audit findings (3 moderate, 17 high); no unrelated automatic dependency fixes applied.
+
+## Latest Chandrika appointment calendar link (2026-09-18)
+
+User confirmed that https://calendar.app.google/GisGeKxkDSF2Tzhn8 was already supplied and used in the previous deployment. They supplied it again only because the assistant asked after this exact short link was omitted from context.md; it is not a new calendar or a request to change the integration. Retain this URL for future sessions and do not ask the user to supply it again. Checked it with an HTTP GET: it returned HTTP 200 and resolved to https://calendar.google.com/appointments/schedules/AcZssZ130T9uNP94Av-Y9ZELQ3BQVycvWTWxj0gdNGU6kG9EaGRfl4tFSx_8QwBqpdcCf2_s6mKIsKVt, the same schedule destination recorded for the earlier short link. No portal code change is needed to select this schedule. This check confirms the link destination and accessibility only; live slots, duration, and booking details have not been independently verified. No booking was made. This context update is local and uncommitted.
+
+## SES sender identity progress (2026-09-18)
+
+After receiving console navigation steps to add chsaripalli@gmail.com in SES ap-south-1, the user reported "email identity added". Identity creation is user-reported; successful verification via the inbox link and SES production access have not yet been confirmed. Next check: identity status should be Verified, then inspect Account dashboard for sandbox/production status. Do not treat identity creation alone as completed verification or production access.
+
+User subsequently confirmed the original identity was verified in us-east-1, then deleted there and recreated in ap-south-1 (Mumbai). The sender identity is now created in the intended region according to the user. Verification of the newly created ap-south-1 identity is still unconfirmed; the previous us-east-1 verification does not establish its status. SES sandbox/production status in ap-south-1 also remains unconfirmed.
+
+Latest user confirmation: chsaripalli@gmail.com is now verified in SES ap-south-1 (Mumbai). Sender verification is complete according to the user. Only the region's sandbox/production access status remains unconfirmed for SES setup.
+
+User confirmed SES ap-south-1 is in the sandbox. Sender verification is complete, but production access must be requested before sending payment acknowledgement emails to arbitrary signed-in users. While sandboxed, test recipient identities must also be verified. Production access has not yet been requested or approved in this session.
+
+## Session pause and next steps (2026-09-18)
+
+User chose to remain in the SES sandbox for testing; production access is NOT required now. The sandbox limits of 200 emails per day and one email per second are sufficient for current testing. The relevant restriction is that recipients must be verified in SES ap-south-1. Verify the intended test user's login email there before testing, or use the already-verified chsaripalli@gmail.com as the test recipient. The payment backend derives the recipient from the signed-in user's verified Cognito ID token, so the test login email must match the SES-verified recipient. Production access is deferred until emails need to reach unverified recipients. Do not ask for production access as a prerequisite for sandbox testing.
+
+User requested saving context and resuming tomorrow. Resume with the local UPI payment implementation and auth file reorganization: inspect current Git/deployment state, arrange an SES-verified test login, and continue deployment/testing as authorized. This session only updated context and guided the user's SES setup; it did not commit, push, deploy, submit a payment reference, send a test email, or request SES production access. The new Mumbai sender verification and sandbox status are user-confirmed. Preserve the standing workflow: update context.md before any future requested commit & push, then push to both remotes.
+
+
+## Final simplified booking and UPI flow (2026-09-19)
+
+User explicitly cancelled slot holding and chose: (1) book through the existing Google appointment schedule, letting Google send its normal confirmation; (2) display the UPI ID/QR and ask for ₹2,000 payment; (3) collect a UPI transaction number and state that the appointment is subject to payment realization. This supersedes the previous SES-email and temporary-hold proposals.
+
+Restored the original Google booking iframe, preference form, calendar fallback link and app.js behavior. Added the ₹2,000 QR/app link for `hayagreeva@icici` and a reference textbox with booking/payment attestation. The signed-in user's verified email and transaction reference are saved in DynamoDB via a Cognito-authorized API; the page acknowledges receipt subject to payment realization. No second email, SES, Calendar OAuth integration, slot holds or scheduled cleanup remain. Removed their draft code, docs, tests and direct dependencies. Previous auth file reorganization remains intact.
+
+Google supports a custom schedule Description that appears in confirmation emails; this must be edited in Chandrika's Google Calendar account. The repo cannot change that external setting. Exact suggested text and setup instructions are in `payments/README.md`. The condition is already displayed in the portal, but the Google schedule description has not been changed.
+
+Backend adds only a payment-reference API/Lambda/DynamoDB table. Generated endpoint: `custom.paymentReferences.endpoint`. No new credentials are needed; backend/frontend deployment is required before submission works. Records use AWAITING_REALIZATION and user-reported Google booking status; staff match by login email and verify funds manually. Duplicate references are idempotent for the same user, rejected across users, and limited to five new references per user/day. No health data is copied. All changes remain local and uncommitted; no live booking, payment, email or deployment was performed.
+
+Validation for the final flow: seven reference validation/storage tests plus QR verification passed. Build, JavaScript syntax, TypeScript check, CDK synthesis, generated asset links, unique HTML IDs, three-step ordering and whitespace checks passed. Synthesis confirms an authenticated reference endpoint and no SES/Calendar permissions or hold scheduler. Google description update and live deployment remain pending.
+
+
+## Booking wording and payment visibility (2026-09-19)
+
+Changed the appointment heading to “Book Yoga Therapy Appointment” and profile email label to “Your email”. UPI and reference sections were already unconditional but located below the tall calendar; moved them into a payment column beside the booking details/calendar on wide screens. Added top step links to the calendar, UPI QR, and transaction-reference field. Narrow screens stack content with direct step links and a 640px calendar. Updated hash navigation so these step anchors keep the Book Appointment panel visible. UPI details, QR and reference input require no booking completion or sign-in to be displayed; only submitting the reference requires sign-in. Updated cache versions. Local changes only.
+
+
+## Compact booking layout (2026-09-19)
+
+Merged counselling options into Your details, removed the separate Your session fieldset, and renamed the option group Counselling preference (still required). Reduced appointment heading, section spacing, form padding, repetitive helper text, payment-card spacing and QR size (200px). Reduced the Google iframe from 960px on desktop / 640px on narrow screens to 560px with its own scrolling, preserving the full booking flow and external-calendar fallback. Payment/reference sections remain unconditional. Google feedback/footer controls are inside the cross-origin iframe and have no documented embed toggle; they have not been obscured or removed. Updated cache versions. Changes remain local.
+
+
+## Payment UI refinements and bank transfer (2026-09-19)
+
+Step navigation now says “Pay” and “Share payment info”. Removed the appointment Continue/Clear buttons and their unused handlers, the external-calendar link, and the Open UPI app button. Replaced Copy UPI ID with an accessible copy icon beside the ID. The instruction now says “Enter the same details in Google’s booking form when popped”.
+
+Payment heading is now “2. Pay ₹2,000”. Both payment choices are visible: UPI (existing QR/ID), then Bank Transfer with user-supplied ICICI Bank account `7427 0150 2003` and IFSC `ICIC0007427`. Reference labels, attestation and server validation messages now accept either UPI or bank transfer. Payment remains subject to realization. No account verification or transfer was performed. Changes are local.
+
+
+## Persistent yoga testimonial navigation (2026-09-19)
+
+The yoga testimonial page lacked the service sidebar. It now uses the same header, left pane, shared styles and footer as the yoga portal. Case Info and Book Appointment link back to their service panels; Testimonials stays highlighted. All 17 testimonial cards are unchanged. Music and astrology testimonial pages already retain their sidebars. Narrow screens keep the existing above-content navigation. Build and structure/link checks passed; local changes only.
+
+
+## Wider Google booking calendar (2026-09-19)
+
+Changed the appointment workflow to a full-width calendar above the payment area, removed the appointment panel's 1120px maximum, and reduced its side margins to 20px. Payment details and the reference form now share a row below the calendar on wide screens and stack on smaller screens. Sidebar remains intact, payment sections remain unconditional, and the calendar height remains 560px. Google controls the number of visible days; widening does not force a seven-day view. Build and whitespace checks passed. Local only.

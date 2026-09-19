@@ -1,7 +1,10 @@
 import http from 'node:http';
 import { readFile } from 'node:fs/promises';
 const port = Number(process.env.PORT || 3000);
-const files = { '/': ['index.html', 'text/html'], '/index.html': ['index.html', 'text/html'], '/styles.css': ['styles.css', 'text/css'], '/app.js': ['app.js', 'text/javascript'], '/auth-client.js': ['auth-client.js', 'text/javascript'], '/profile.js': ['profile.js', 'text/javascript'], '/amplify_outputs.json': ['amplify_outputs.json', 'application/json'] };
+const files = { '/': ['index.html', 'text/html'], '/index.html': ['index.html', 'text/html'], '/styles.css': ['styles.css', 'text/css'], '/app.js': ['app.js', 'text/javascript'], '/auth/auth-client.js': ['auth/auth-client.js', 'text/javascript'], '/profile/profile.js': ['profile/profile.js', 'text/javascript'], '/amplify_outputs.json': ['amplify_outputs.json', 'application/json'] };
+for (const file of ['config.js', 'appointment-payment.js', 'upi-qr.svg']) {
+  files[`/payments/${file}`] = [`payments/${file}`, file.endsWith('.svg') ? 'image/svg+xml' : 'text/javascript'];
+}
 files['/services.css'] = ['services.css', 'text/css'];
 for (const section of ['profile', 'yoga-therapy', 'carnatic-music', 'astrology', 'yoga-therapy/testimonials', 'carnatic-music/testimonials', 'astrology/testimonials']) {
   for (const suffix of ['', '/', '/index.html']) {

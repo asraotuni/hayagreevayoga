@@ -6,7 +6,7 @@
   <meta name="description" content="Discover yoga therapy with Chandrika Saripalli, MSc Yoga Therapy. A thoughtful, personal approach to movement, breath, and wellbeing.">
   <meta name="theme-color" content="#244d40">
   <title>Hayagreeva Yoga | Chandrika Saripalli</title>
-  <link rel="stylesheet" href="/styles.css?v=service-routes-7">
+  <link rel="stylesheet" href="/styles.css?v=wide-calendar-8">
 </head>
 <body>
   <a class="skip-link" href="#main-content">Skip to content</a>
@@ -65,45 +65,70 @@
       <noscript><p>Enable JavaScript to review your details. Saving and submission are not available.</p></noscript>
     </section>
     <section id="book-appointment" class="case-panel wrap" hidden aria-labelledby="appointment-heading">
-      <p class="eyebrow">MAKE TIME FOR YOURSELF</p>
-      <h1 id="appointment-heading" tabindex="-1">Book an <em>Appointment</em></h1>
-      <p class="case-intro">Take the next step in your yoga therapy journey.</p>
+      <h1 id="appointment-heading" tabindex="-1">Book Yoga Therapy Appointment</h1>
       <p class="appointment-duration">One-hour counselling session · India Standard Time (Asia/Kolkata)</p>
-      <form id="appointment-form" aria-describedby="appointment-status">
+      <nav class="appointment-step-links" aria-label="Appointment steps"><a href="#live-booking">1. Book appointment</a><a href="#upi-payment">2. Pay</a><a href="#payment-reference-section">3. Share payment info</a></nav>
+      <div class="appointment-workflow">
+      <div class="appointment-booking-column">
+      <div id="appointment-form" aria-describedby="appointment-status">
         <fieldset>
           <legend>Your details</legend>
           <div class="form-grid">
             <div class="field"><label for="appointment-first-name">First Name</label><input id="appointment-first-name" name="firstName" readonly placeholder="From your profile" aria-describedby="appointment-profile-help"></div>
             <div class="field"><label for="appointment-last-name">Last Name</label><input id="appointment-last-name" name="lastName" readonly placeholder="From your profile" aria-describedby="appointment-profile-help"></div>
-            <div class="field appointment-wide"><small id="appointment-profile-help">Your name will be filled from your profile once profile sign-in is available.</small></div>
-            <div class="field appointment-wide"><label for="appointment-email">Appointment email</label><input id="appointment-email" name="email" type="email" autocomplete="email" readonly placeholder="From your profile" aria-describedby="appointment-email-help"><small id="appointment-email-help">This email comes from your profile and will be used in Google’s booking form.</small></div>
+            <div class="field appointment-wide"><label for="appointment-email">Your email</label><input id="appointment-email" name="email" type="email" autocomplete="email" readonly placeholder="From your profile" aria-describedby="appointment-email-help"><small id="appointment-email-help">Use the same email when booking below.</small></div>
+            <fieldset class="field appointment-wide counselling-preference"><legend>Counselling preference</legend><div class="radio-options"><label><input type="radio" name="channel" value="online" required> Online</label><label><input type="radio" name="channel" value="therapy-center"> At therapy center</label></div></fieldset>
           </div>
-        </fieldset>
-        <fieldset>
-          <legend>Your session</legend>
-          <div class="form-grid">
-            <fieldset class="field appointment-wide"><legend>Counselling channel <span>(required)</span></legend><div class="radio-options"><label><input type="radio" name="channel" value="online" required> Online</label><label><input type="radio" name="channel" value="therapy-center"> At therapy center</label></div></fieldset>
-
-          </div>
+          <small id="appointment-profile-help">Sign in to fill your details from your profile.</small>
           <p id="appointment-center" class="draft-notice" hidden>Hayagreeva Yoga School<br>Club House, Gopalan Habitat Splendour<br>Brookefield, Kundalahalli, Bangalore 560037</p>
         </fieldset>
-        <p id="appointment-status" class="draft-notice" role="status">Choose your preferences here, then select a live slot and complete your booking in Google Calendar below. These preferences are not sent automatically: enter the same email in Google’s booking form and include your counselling channel in its notes or additional information field, if available. Your appointment is confirmed only after you complete Google’s booking steps.</p>
-        <div class="form-actions"><button class="button" type="submit" disabled>Continue to available slots</button><button class="clear-button" type="reset">Clear form</button></div>
-      </form>
+        <p id="appointment-status" class="draft-notice" role="status">Enter the same details in Google’s booking form when popped; these details are not transferred automatically.</p>
+      </div>
       <section id="live-booking" class="live-booking" aria-labelledby="live-booking-heading">
-        <h2 id="live-booking-heading" tabindex="-1">Choose an available slot</h2>
-        <p>Availability, session duration, and booking confirmation are managed by Chandrika’s Google appointment schedule. Check the time zone shown in the calendar before selecting a time.</p>
-        <p id="booking-preferences" role="status"></p>
-        <a class="text-link" href="https://calendar.app.google/cTrkzAT8y5eaLwraA" target="_blank" rel="noopener noreferrer">Open booking calendar in a new tab <span aria-hidden="true">↗</span></a>
+        <h2 id="live-booking-heading" tabindex="-1">1. Book your appointment</h2>
+        <p>Google sends your booking confirmation. Please check the calendar’s time zone.</p>
         <iframe title="Book a yoga therapy appointment with Chandrika Saripalli" src="https://calendar.google.com/appointments/schedules/AcZssZ130T9uNP94Av-Y9ZELQ3BQVycvWTWxj0gdNGU6kG9EaGRfl4tFSx_8QwBqpdcCf2_s6mKIsKVt?gv=true" loading="lazy" referrerpolicy="strict-origin-when-cross-origin"></iframe>
-        <p>If the calendar does not load, use the link above to open it directly.</p>
       </section>
+      </div>
+      <div class="appointment-payment-column">
+      <section id="upi-payment" class="upi-payment" aria-labelledby="upi-heading">
+        <h2 id="upi-heading">2. Pay ₹2,000</h2>
+        <h3 class="payment-method-heading">UPI</h3>
+        <p>After booking, scan the QR or use the UPI ID in your payment app.</p>
+        <div class="upi-payment-details">
+          <img src="/payments/upi-qr.svg" width="280" height="280" alt="Scan to pay ₹2,000 to hayagreeva@icici using a UPI app">
+          <div><p class="upi-id-row">UPI ID: <strong id="upi-id">hayagreeva@icici</strong><button id="copy-upi" class="upi-copy-icon" type="button" aria-label="Copy UPI ID" title="Copy UPI ID"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.7" aria-hidden="true"><rect x="8" y="8" width="12" height="12" rx="2"/><path d="M16 8V6a2 2 0 0 0-2-2H6a2 2 0 0 0-2 2v8a2 2 0 0 0 2 2h2"/></svg></button></p>
+            <span id="upi-copy-status" class="upi-copy-status" role="status" aria-live="polite"></span>
+            <p class="upi-help">Check the recipient and ₹2,000 amount before paying.</p>
+          </div>
+        </div>
+        <section class="bank-transfer" aria-labelledby="bank-transfer-heading">
+          <h3 id="bank-transfer-heading" class="payment-method-heading">Bank Transfer</h3>
+          <dl class="bank-details"><div><dt>Account number</dt><dd>7427 0150 2003</dd></div><div><dt>Bank</dt><dd>ICICI Bank</dd></div><div><dt>IFSC</dt><dd>ICIC0007427</dd></div></dl>
+        </section>
+      </section>
+      <section id="payment-reference-section" class="upi-payment" aria-labelledby="payment-reference-heading">
+        <h2 id="payment-reference-heading">3. Transaction reference</h2>
+        <p>Sign in to save your UPI or bank transfer reference for verification.</p>
+        <form id="payment-reference-form">
+          <div class="field"><label for="upi-reference">UPI Transaction Nbr or RRN / Bank Transfer Info</label><input id="upi-reference" name="reference" minlength="6" maxlength="64" pattern="[A-Za-z0-9\-]{6,64}" autocomplete="off" spellcheck="false" required aria-describedby="upi-reference-help"><small id="upi-reference-help">Enter the reference shown for your ₹2,000 payment. Never enter your UPI PIN.</small></div>
+          <label class="booking-attestation"><input type="checkbox" name="paid" required> I have completed appointment booking and payment done.</label>
+          <p class="draft-notice"><strong>Your appointment is subject to payment realization.</strong></p>
+          <div class="form-actions"><button class="button" type="submit" disabled>Submit transaction reference</button></div>
+          <p id="payment-reference-status" role="status" aria-live="polite"></p>
+        </form>
+        <p>Keep your Google confirmation and payment details.</p>
+        <noscript><p>Enable JavaScript and sign in to submit your transaction reference.</p></noscript>
+      </section>
+      </div>
+      </div>
     </section>
 
   </main>
   </div>
   <footer class="wrap"><a class="footer-brand" href="#home">Hayagreeva Yoga</a><p>Mindful movement. Meaningful change.</p><span>© 2026 Hayagreeva Yoga</span></footer>
-  <script src="/app.js?v=testimonial-pages-8" defer></script>
-  <script src="/auth-client.js" type="module"></script>
+  <script src="/app.js?v=appointment-controls-5" defer></script>
+  <script src="/auth/auth-client.js" type="module"></script>
+  <script src="/payments/appointment-payment.js?v=copy-icon-2" type="module"></script>
 </body>
 </html>
