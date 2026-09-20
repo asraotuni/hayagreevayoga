@@ -378,3 +378,11 @@ Validation: full npm tests (including ownership, rejected admin/identity edits, 
 ## Profile persistence commit preparation (2026-09-20)
 
 Updated context before the requested commit and push to GitHub origin/dev. Scope includes authenticated DynamoDB profile save/load, database-aligned address fields, admin-only service flags, legacy browser-profile migration on Save, profile PITR disabled in dev/prod, browser cache updates, documentation and tests. Latest tests, build, TypeScript check, Lambda bundling/CDK route synthesis and whitespace checks passed. This note precedes commit/push; verify Git for the resulting revision and Amplify separately for deployment success.
+
+## Google verified-email mapping correction (2026-09-20)
+
+User confirmed profile deployment succeeded but Profile returns "Sign in with a verified email." Found Google attribute mapping lacked email_verified, while profile/payment APIs require this signed claim. Added custom mapping of the standard Cognito email_verified attribute to Google's email_verified claim (the installed Amplify/CDK version supports this standard attribute via custom mapping). Kept verification and ownership checks intact. AWS documents that federated email verification must be mapped from the provider; live user tokens were not inspected. After deployment, sign out and start a fresh Google sign-in so Cognito updates attributes and issues new tokens. Existing tokens will not gain the claim merely by deploying. Tests (including missing/false/string/boolean verification), TypeScript check, CDK mapping synthesis and whitespace checks passed. Local fix only; not committed or pushed.
+
+## Verified-email fix commit preparation (2026-09-20)
+
+Updated context before the requested commit and push to GitHub origin/dev. Scope: Google email_verified mapping and regression coverage for profile email verification. Tests, TypeScript check, mapping synthesis and whitespace checks passed. After deployment, users must sign out and sign in again with Google to receive updated verification claims. This note precedes execution; verify Git for commit/push success and Amplify separately for deployment status.

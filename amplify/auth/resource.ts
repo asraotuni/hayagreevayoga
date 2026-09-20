@@ -17,6 +17,8 @@ export const auth = defineAuth({
         scopes: ["openid", "email", "profile"],
         attributeMapping: {
           email: "email",
+          // Map Google verification status into the standard Cognito attribute.
+          custom: { email_verified: "email_verified" },
           givenName: "given_name",
           familyName: "family_name",
         },

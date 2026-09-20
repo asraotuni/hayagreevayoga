@@ -49,3 +49,12 @@ test('store uses atomic update, preserving existing admin flags and unrelated at
   await store.get('user-b');
   assert.deepEqual(commands[1].Key,{uuid:'user-b'}); assert.equal(commands[1].ConsistentRead,true);
 });
+
+test('email verification accepts JWT string/boolean true but rejects missing or false claims', async () => {
+  const handler = createHandler({ get: async () => undefined });
+  for (const value of [true, 'true', false, 'false', undefined]) {
+    const request = event('GET');
+    request.requestContext.authorizer.jwt.claims.email_verified = value;
+    assert.equal((await handler(request)).statusCode, value === true || value === 'true' ? 200 : 401);
+  }
+});
