@@ -1,4 +1,4 @@
-import { loadAuth, loadConfig } from '../auth/auth-client.js';
+import { loadAuth, loadConfig } from '../auth/auth-client.js?v=ddb-1';
 import { PAYMENT } from './config.js?v=chsaripalli-1';
 const form = document.querySelector('#payment-reference-form');
 const status = document.querySelector('#payment-reference-status');

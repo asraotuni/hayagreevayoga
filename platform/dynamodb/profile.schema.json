@@ -4,21 +4,70 @@
   "description": "Application record contract. DynamoDB enforces only the uuid partition key. Validate this contract in any future writer.",
   "type": "object",
   "additionalProperties": false,
-  "required": ["uuid", "firstName", "lastName", "email", "mobile", "addressLine1", "addressLine2", "addressLine3", "country", "state", "pin", "yogaTherapy", "classicalMusic", "astrology"],
+  "required": [
+    "uuid",
+    "firstName",
+    "lastName",
+    "email",
+    "mobile",
+    "addressLine1",
+    "addressLine2",
+    "addressLine3",
+    "country",
+    "state",
+    "pin",
+    "yogaTherapy",
+    "classicalMusic",
+    "astrology"
+  ],
   "properties": {
-    "uuid": { "type": "string", "format": "uuid" },
-    "firstName": { "type": "string" },
-    "lastName": { "type": "string" },
-    "email": { "type": "string", "format": "email" },
-    "mobile": { "type": "string" },
-    "addressLine1": { "type": "string" },
-    "addressLine2": { "type": "string" },
-    "addressLine3": { "type": "string" },
-    "country": { "type": "string" },
-    "state": { "type": "string" },
-    "pin": { "type": "string" },
-    "yogaTherapy": { "type": "boolean" },
-    "classicalMusic": { "type": "boolean" },
-    "astrology": { "type": "boolean" }
+    "uuid": {
+      "type": "string",
+      "format": "uuid"
+    },
+    "firstName": {
+      "type": "string"
+    },
+    "lastName": {
+      "type": "string"
+    },
+    "email": {
+      "type": "string",
+      "format": "email"
+    },
+    "mobile": {
+      "type": "string"
+    },
+    "addressLine1": {
+      "type": "string"
+    },
+    "addressLine2": {
+      "type": "string"
+    },
+    "addressLine3": {
+      "type": "string"
+    },
+    "country": {
+      "type": "string"
+    },
+    "state": {
+      "type": "string"
+    },
+    "pin": {
+      "type": "string"
+    },
+    "yogaTherapy": {
+      "type": "boolean"
+    },
+    "classicalMusic": {
+      "type": "boolean"
+    },
+    "astrology": {
+      "type": "boolean"
+    },
+    "birthdate": {
+      "type": "string",
+      "description": "Optional date of birth in YYYY-MM-DD form; empty string clears it."
+    }
   }
 }

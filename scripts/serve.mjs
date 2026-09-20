@@ -5,6 +5,7 @@ const files = { '/': ['index.html', 'text/html'], '/index.html': ['index.html', 
 for (const file of ['config.js', 'appointment-payment.js', 'upi-qr.svg']) {
   files[`/payments/${file}`] = [`payments/${file}`, file.endsWith('.svg') ? 'image/svg+xml' : 'text/javascript'];
 }
+files['/profile/api.js'] = ['profile/api.js', 'text/javascript'];
 files['/services.css'] = ['services.css', 'text/css'];
 for (const section of ['profile', 'yoga-therapy', 'carnatic-music', 'astrology', 'yoga-therapy/testimonials', 'carnatic-music/testimonials', 'astrology/testimonials']) {
   for (const suffix of ['', '/', '/index.html']) {

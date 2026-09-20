@@ -28,7 +28,7 @@ test('dev and prod profiles use separate stack-owned tables with retained data',
         AttributeDefinitions: [{ AttributeName: 'uuid', AttributeType: 'S' }],
         BillingMode: 'PAY_PER_REQUEST',
         DeletionProtectionEnabled: environment === 'prod',
-        PointInTimeRecoverySpecification: { PointInTimeRecoveryEnabled: true },
+        PointInTimeRecoverySpecification: { PointInTimeRecoveryEnabled: false },
         SSESpecification: { SSEEnabled: true },
       },
     });

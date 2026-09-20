@@ -1,9 +1,10 @@
+import { profileRequest } from "../profile/api.js?v=ddb-1";
 const authMounts = document.querySelectorAll("[data-auth-mount]");
 let auth, authConfig, signedInProfile;
 
 function button(label, handler) { const b = document.createElement("button"); b.className = "auth-button"; b.type = "button"; b.textContent = label; b.addEventListener("click", handler); return b; }
 function render(profile) { authMounts.forEach((mount) => { if (!profile) { mount.replaceChildren(button("Sign in", showSignIn)); return; } const wrap = document.createElement("span"); wrap.className = "account-menu"; const trigger = button(profile.firstName, () => wrap.classList.toggle("open")); trigger.setAttribute("aria-haspopup", "menu"); const menu = document.createElement("span"); menu.className = "account-menu-items"; menu.setAttribute("role", "menu"); const profileItem = button("Profile", () => location.assign("/profile/")); const signOutItem = button("Sign out", signOut); profileItem.setAttribute("role", "menuitem"); signOutItem.setAttribute("role", "menuitem"); menu.append(profileItem, signOutItem); wrap.append(trigger, menu); mount.replaceChildren(wrap); }); }
-function fillProfileFields(profile) { [["first-name", profile?.firstName], ["last-name", profile?.lastName], ["dob", profile?.birthdate], ["appointment-first-name", profile?.firstName], ["appointment-last-name", profile?.lastName], ["appointment-email", profile?.email]].forEach(([id, value]) => { const field = document.getElementById(id); if (field && value) field.value = value; }); }
+function fillProfileFields(profile) { [["first-name", profile?.firstName], ["last-name", profile?.lastName], ["dob", profile?.birthdate], ["appointment-first-name", profile?.firstName], ["appointment-last-name", profile?.lastName], ["appointment-email", profile?.email]].forEach(([id, value]) => { const field = document.getElementById(id); if (field && value != null) field.value = value; }); }
 render();
 
 const dialog = document.createElement("dialog");
@@ -18,10 +19,17 @@ const message = dialog.querySelector("#auth-message"), email = dialog.querySelec
 function setMessage(text, error = false) { message.textContent = text; message.dataset.error = String(error); }
 function showSignIn() { setMessage("Use Google or receive a one-time code by email."); dialog.showModal(); }
 function showProfile() { location.assign("/profile/"); }
-async function signOut() { await (await loadAuth()).signOut(); signedInProfile = undefined; render(); }
+async function signOut() { await (await loadAuth()).signOut(); signedInProfile = undefined; render(); document.dispatchEvent(new Event("hayagreeva-auth-changed")); }
 async function loadConfig() { if (authConfig) return authConfig; const response = await fetch("/amplify_outputs.json", { cache: "no-store" }); if (!response.ok) throw new Error("Authentication is not configured for this environment yet."); authConfig = await response.json(); return authConfig; }
 async function loadAuth() { if (auth) return auth; const config = await loadConfig(); const [{ Amplify }, methods] = await Promise.all([import("https://esm.sh/aws-amplify@6"), import("https://esm.sh/aws-amplify@6/auth"), import("https://esm.sh/aws-amplify@6/auth/enable-oauth-listener")]); Amplify.configure(config); auth = methods; return auth; }
-async function refreshProfile(retries = 0) { try { const client = await loadAuth(), user = await client.getCurrentUser(), attributes = await client.fetchUserAttributes(), saved = JSON.parse(localStorage.getItem(`hayagreeva-profile-${user.userId}`) || "{}"); signedInProfile = { firstName: attributes.given_name || attributes.name?.split(" ")[0] || "Profile", lastName: attributes.family_name || attributes.name?.split(" ").slice(1).join(" ") || "", email: attributes.email || user.signInDetails?.loginId || "", birthdate: saved.birthdate || "" }; render(signedInProfile); fillProfileFields(signedInProfile); } catch { if (retries < 4 && new URLSearchParams(location.search).has("code")) window.setTimeout(() => refreshProfile(retries + 1), 500); } }
+function readLegacyProfile(userId) { try { return JSON.parse(localStorage.getItem(`hayagreeva-profile-${userId}`) || "{}") || {}; } catch { return {}; } }
+async function refreshProfile(retries = 0) { try { const client = await loadAuth(), user = await client.getCurrentUser(), attributes = await client.fetchUserAttributes(), saved = readLegacyProfile(user.userId); signedInProfile = { firstName: attributes.given_name || attributes.name?.split(" ")[0] || "Profile", lastName: attributes.family_name || attributes.name?.split(" ").slice(1).join(" ") || "", email: attributes.email || user.signInDetails?.loginId || "", birthdate: saved.birthdate || "" }; render(signedInProfile); fillProfileFields(signedInProfile);
+try {
+  const stored = await profileRequest(client, await loadConfig());
+  if ((await client.getCurrentUser()).userId !== user.userId) return;
+  if (stored) { signedInProfile = stored; render(stored); fillProfileFields(stored); }
+} catch { /* Profile errors must not prevent sign-in; Profile page provides retry feedback. */ }
+document.dispatchEvent(new Event("hayagreeva-auth-changed")); } catch { if (retries < 4 && new URLSearchParams(location.search).has("code")) window.setTimeout(() => refreshProfile(retries + 1), 500); } }
 dialog.querySelector("#google-sign-in").addEventListener("click", async () => { try { setMessage("Opening Google sign in…"); await (await loadAuth()).signInWithRedirect({ provider: "Google" }); } catch (error) { setMessage(error.message || "Google sign in is unavailable.", true); } });
 dialog.querySelector(".auth-close").addEventListener("click", () => dialog.close()); profileDialog.querySelector(".auth-close").addEventListener("click", () => profileDialog.close());
 profileDialog.querySelector("[data-sign-out]").addEventListener("click", async () => { await signOut(); profileDialog.close(); });

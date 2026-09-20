@@ -356,3 +356,25 @@ User requested hayagreeva-<branch> names. Updated platform/dynamodb/resource.js 
 ## Platform infrastructure commit preparation (2026-09-20)
 
 Saved context before the requested commit and push to GitHub origin/dev. Scope: platform DynamoDB infrastructure, profile record schema, dev/prod selection, explicit hayagreeva-dev/hayagreeva-prod table names, Amplify backend integration, documentation and infrastructure tests. Tests passed after the naming change; backend TypeScript check and site build passed during implementation. No profile API or form persistence change is included. This note precedes commit/push; verify Git for the resulting revision and Amplify separately for deployment status.
+
+## Disable profile point-in-time backups (2026-09-20)
+
+User confirmed the platform infrastructure was deployed, then requested disabling point-in-time backups. Set pointInTimeRecoveryEnabled to false for platform profile tables in both dev and prod; updated infrastructure assertions and documentation. This supersedes the earlier profile backup setting. Payment-reference table settings are unchanged. Local configuration change only; a deployment is needed to apply it to AWS.
+
+## Profile address fields and admin-only service flags (2026-09-20)
+
+Replaced the Profile address textarea with addressLine1, addressLine2 and addressLine3 inputs, retaining country/state/PIN. Local saves now use those database-aligned keys and mobile (with fallback from the old phone key). Existing multiline address values populate the new fields; additional legacy lines are kept together in line 3. Explicit empty new fields take precedence over old values. Versioned the profile script URL to refresh cached form logic.
+
+User clarified that yogaTherapy, classicalMusic and astrology flags are reserved for future admin-managed service access. These flags remain absent from Profile UI and save data; future profile APIs must enforce that restriction server-side. Profile storage still uses Cognito for names and browser-local storage for other details; no DynamoDB API wiring was requested here. Build, syntax, whitespace and focused checks for legacy address migration, field mapping, leading-zero preservation and exclusion of service flags passed. Changes remain local.
+
+## DynamoDB profile save/load (2026-09-20)
+
+Added amplify/profiles GET/PUT /profile API with Cognito JWT authorizer, Lambda and only GetItem/UpdateItem access to the existing environment-specific profile table. Endpoint is output at custom.profiles.endpoint. Reads/writes derive uuid and email exclusively from verified ID-token claims; users cannot select another record or submit identity/service flags. Atomic UpdateItem preserves existing admin flags and initializes missing flags to false. Responses omit admin flags. Editable fields are validated with body/field limits and optional birthdate validation. Date of birth is added as an optional schema attribute to preserve the existing form across devices.
+
+Profile now loads from DynamoDB and saves there; no Cognito schema change is needed. Cognito names are initial defaults only. When a record does not exist, old browser-local values prefill the form and migrate only on explicit Save. Failed reads block edits rather than overwriting cloud records with stale local data. Login loads cloud names/birthdate for account display and service-form prefill; API failure does not break authentication. Auth-change events support signing in/out on Profile, and repeated same-user refreshes do not overwrite edits. Shared browser API asset, local serving/build entries and module cache versions updated.
+
+Validation: full npm tests (including ownership, rejected admin/identity edits, validation, atomic flag preservation, frontend cloud loading/legacy migration/read failure), build, syntax, TypeScript check and whitespace passed. Standalone CDK synthesis bundled the profile Lambda and verified JWT authorization on both routes. No real user records were written and no live deployment performed. Earlier local PITR-disable and address-form changes remain included in the working tree. Deployment is required before the new API is available.
+
+## Profile persistence commit preparation (2026-09-20)
+
+Updated context before the requested commit and push to GitHub origin/dev. Scope includes authenticated DynamoDB profile save/load, database-aligned address fields, admin-only service flags, legacy browser-profile migration on Save, profile PITR disabled in dev/prod, browser cache updates, documentation and tests. Latest tests, build, TypeScript check, Lambda bundling/CDK route synthesis and whitespace checks passed. This note precedes commit/push; verify Git for the resulting revision and Amplify separately for deployment success.

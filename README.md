@@ -68,4 +68,4 @@ The fee is ₹2,000, paid to `chsaripalli@okicici` using the local QR or UPI app
 
 ## Platform profiles and environments
 
-DynamoDB profile infrastructure and its record contract live in [`platform/`](platform/README.md). The Amplify backend provisions separate stack-owned tables for `dev` and `prod`; see that guide for branch setup and deployment. This adds infrastructure only; profile form persistence remains unchanged until a profile API is connected.
+DynamoDB profile infrastructure and its record contract live in [`platform/`](platform/README.md). The Amplify backend provisions separate stack-owned tables for `dev` and `prod`; see that guide for branch setup and deployment. The authenticated profile API saves and retrieves the signed-in user’s DynamoDB record. Existing browser-local details migrate on Save when no cloud record exists. Service access flags remain admin-only.

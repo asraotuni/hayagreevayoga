@@ -9,7 +9,7 @@ export function addProfiles(stack, environment = getEnvironment()) {
     partitionKey: { name: 'uuid', type: AttributeType.STRING },
     billingMode: BillingMode.PAY_PER_REQUEST,
     encryption: TableEncryption.AWS_MANAGED,
-    pointInTimeRecoverySpecification: { pointInTimeRecoveryEnabled: true },
+    pointInTimeRecoverySpecification: { pointInTimeRecoveryEnabled: false },
     deletionProtection: environment === 'prod',
     removalPolicy: RemovalPolicy.RETAIN,
   });

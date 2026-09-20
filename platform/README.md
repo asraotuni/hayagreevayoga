@@ -1,10 +1,10 @@
 # Platform infrastructure
 
-`amplify/backend.ts` installs `dynamodb/resource.js` into the `platform-profiles` stack. It creates a profiles table keyed by the string `uuid`, with on-demand billing, encryption, point-in-time recovery, and retention on stack deletion/replacement. Production also enables deletion protection. Table names are explicitly `hayagreeva-dev` and `hayagreeva-prod`, selected from the Amplify branch. Each name must be unique within its AWS account and region; only one stack should own each table.
+`amplify/backend.ts` installs `dynamodb/resource.js` into the `platform-profiles` stack. It creates a profiles table keyed by the string `uuid`, with on-demand billing, encryption and retention on stack deletion/replacement. Point-in-time recovery is disabled for both dev and prod. Production also enables deletion protection. Table names are explicitly `hayagreeva-dev` and `hayagreeva-prod`, selected from the Amplify branch. Each name must be unique within its AWS account and region; only one stack should own each table.
 
 ## Record contract
 
-`dynamodb/profile.schema.json` documents the application record shape. DynamoDB enforces the primary key only; future write handlers must validate the remaining fields, including UUID/email formats. All fields are present; unused address lines or unprovided optional contact values can be empty strings. Mobile and PIN remain strings to preserve leading zeros and international formatting. Service flags use `true` (yes) and `false` (no).
+`dynamodb/profile.schema.json` documents the application record shape. DynamoDB enforces the primary key only; future write handlers must validate the remaining fields, including UUID/email formats. All fields are present; unused address lines or unprovided optional contact values can be empty strings. Mobile and PIN remain strings to preserve leading zeros and international formatting. Service flags use `true` (yes) and `false` (no). These flags are reserved for admin-managed service access; user profile forms must not edit them, and future profile write APIs must reject user attempts to change them.
 
 Example (fictional):
 
@@ -27,7 +27,9 @@ Example (fictional):
 }
 ```
 
-For signed-in users, use the verified Cognito token's `sub` as `uuid` within that environment. Do not accept a browser-supplied owner ID for authenticated writes. Production and development have separate user pools, so a person's UUID can differ between environments. This infrastructure does not seed records, migrate browser-local profiles, or add a profile API. The existing Profile page retains its current storage behavior. Future server handlers can receive `table.tableName` and narrowly scoped permissions from the returned construct; no browser DynamoDB permissions are added.
+For signed-in users, use the verified Cognito token's `sub` as `uuid` within that environment. Do not accept a browser-supplied owner ID for authenticated writes. Production and development have separate user pools, so a person's UUID can differ between environments. The authenticated GET/PUT `/profile` API in `amplify/profiles/` retrieves and saves the signed-in user’s record. UUID and email come from the verified ID token. Only editable fields are accepted; service flags default to false on creation and are preserved on updates. The Lambda has only GetItem/UpdateItem permissions on this environment’s table; browsers receive no DynamoDB permissions.
+
+The Profile page reads DynamoDB before allowing edits. If no record exists, existing browser-local values prefill the form and migrate on explicit Save. A failed read does not fall back to an editable stale profile. Names now save to DynamoDB; Cognito/Google names serve only as initial defaults. Optional `birthdate` preserves the existing Profile date-of-birth field across devices. Saved profiles also prefill service forms after login. API configuration is published at `custom.profiles.endpoint`; deployment is required before the form can save.
 
 ## Dev and prod
 
