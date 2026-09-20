@@ -338,3 +338,21 @@ User reported the old UPI ID beside the updated QR. Source HTML and payment conf
 ## UPI and cache fix release preparation (2026-09-19)
 
 Updated context before the renewed commit-and-push request. Commit scope includes the chsaripalli@okicici UPI ID, regenerated INR 2,000 QR, visible/copy details, versioned payment script and config import, documentation and test expectation. Tests, QR validation, build and whitespace checks passed. Push target is GitHub origin/dev only. This note precedes execution; Git records determine commit/push success.
+
+## Platform DynamoDB profiles and dev/prod (2026-09-20)
+
+Added platform/dynamodb/resource.js and connected it to the Amplify backend via a new platform-profiles stack. The profiles table uses string uuid as its sole primary key, on-demand billing, AWS-managed encryption, point-in-time recovery, retention on deletion/replacement, and prod deletion protection. Generated physical names keep tables isolated across Amplify branches/apps/sandboxes. Existing payment tables/auth remain in their existing stacks.
+
+platform/dynamodb/profile.schema.json documents uuid, firstName, lastName, email, mobile, addressLine1/2/3, country, state, pin, and boolean yogaTherapy/classicalMusic/astrology fields. Interpreted the user's 'line 3country' as separate addressLine3 and country. Mobile/PIN are strings. DynamoDB enforces only the key; future writers must validate the schema. No profile API, browser-storage migration, seeded records or frontend persistence changes are included. Future authenticated writes should derive uuid from verified Cognito sub.
+
+platform/environment.js accepts hosted AWS_BRANCH values dev/prod only; absent AWS_BRANCH uses dev policies for local sandboxes. platform/README.md documents separate fullstack Amplify branches, environment-specific redirects/secrets, Cognito callbacks, domain mapping and record example. Branches, AWS resources and domain mappings were not created or changed. Google calendar and payment destination remain shared external configuration until explicitly separated for dev.
+
+Validation: npm test (including synthesized dev/prod table isolation, key, retention, backups and deletion protection), npm run build, TypeScript no-emit check of backend imports, and git diff --check passed. Local changes only; not committed, pushed or deployed.
+
+## Explicit profile table names (2026-09-20)
+
+User requested hayagreeva-<branch> names. Updated platform/dynamodb/resource.js to set tableName to hayagreeva-dev or hayagreeva-prod according to the validated environment. This supersedes the generated-name choice above. Updated synthesis tests to assert both exact names and documented account/region name uniqueness: local sandboxes default to hayagreeva-dev and must use a separate account/region when hosted dev already owns that name. Infrastructure remains local and undeployed.
+
+## Platform infrastructure commit preparation (2026-09-20)
+
+Saved context before the requested commit and push to GitHub origin/dev. Scope: platform DynamoDB infrastructure, profile record schema, dev/prod selection, explicit hayagreeva-dev/hayagreeva-prod table names, Amplify backend integration, documentation and infrastructure tests. Tests passed after the naming change; backend TypeScript check and site build passed during implementation. No profile API or form persistence change is included. This note precedes commit/push; verify Git for the resulting revision and Amplify separately for deployment status.

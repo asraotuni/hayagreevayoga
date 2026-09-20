@@ -1,8 +1,10 @@
 import { defineBackend } from "@aws-amplify/backend";
 import { auth } from "./auth/resource";
 import { addPaymentReferences } from "./payments/resource";
+import { addProfiles } from "../platform/dynamodb/resource.js";
 
 const backend = defineBackend({ auth });
+addProfiles(backend.createStack("platform-profiles"));
 const { cfnUserPool, cfnUserPoolClient } = backend.auth.resources.cfnResources;
 
 // Cognito requires PASSWORD to remain an allowed first factor. The frontend
